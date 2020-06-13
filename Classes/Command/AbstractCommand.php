@@ -13,14 +13,13 @@
  * The TYPO3 project - inspiring people to share!
  */
 
-namespace Mfc\Prometheus\Controller;
+namespace Mfc\Prometheus\Command;
 
 use Mfc\Prometheus\Domain\Repository\MetricsRepository;
-use Mfc\Prometheus\Services\Metrics\MetricsInterface;
 use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
-class MetricsCommandController extends \TYPO3\CMS\Extbase\Mvc\Controller\CommandController
+class AbstractCommand extends \Symfony\Component\Console\Command\Command
 {
     /**
      * @var array
@@ -32,27 +31,12 @@ class MetricsCommandController extends \TYPO3\CMS\Extbase\Mvc\Controller\Command
      */
     protected $metricsRepository;
 
-    public function __construct()
+    /**
+     * Configure the command by defining the name, options and arguments
+     */
+    protected function configure()
     {
         $this->metricsRepository = GeneralUtility::makeInstance(MetricsRepository::class);
-    }
-
-    public function generateAllFastMetricsCommand()
-    {
-        $this->initializeMetrics(MetricsInterface::FAST);
-        $this->getValuesAndWriteToDb();
-    }
-
-    public function generateAllSlowMetricsCommand()
-    {
-        $this->initializeMetrics(MetricsInterface::SLOW);
-        $this->getValuesAndWriteToDb();
-    }
-
-    public function generateAllMediumMetricsCommand()
-    {
-        $this->initializeMetrics(MetricsInterface::MEDIUM);
-        $this->getValuesAndWriteToDb();
     }
 
     protected function initializeMetrics($velocity = '')

@@ -30,7 +30,4 @@ call_user_func(function () {
         \Mfc\Prometheus\Services\Metrics\PagesMetrics::class,
         \Mfc\Prometheus\Services\Metrics\TtContentMetrics::class,
     ];
-
-    $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['extbase']['commandControllers'][] =
-        \Mfc\Prometheus\Controller\MetricsCommandController::class;
 });
