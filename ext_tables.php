@@ -1,19 +1,23 @@
 <?php
-defined('TYPO3_MODE') or die ('Access denied.');
 
-$extconfig = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['prometheus']);
+defined('TYPO3_MODE') or die('Access denied.');
 
-if ($extconfig['showAdministrationModule'] == true) {
+/** @var \TYPO3\CMS\Core\Configuration\ExtensionConfiguration $extensionConfiguration */
+$extensionConfiguration = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
+    \TYPO3\CMS\Core\Configuration\ExtensionConfiguration::class
+);
+$showAdministrationModule = (bool)$extensionConfiguration->get('prometheus', 'showAdministrationModule');
+if ($showAdministrationModule == true) {
     call_user_func(
         function ($extKey) {
             if (TYPO3_MODE === 'BE') {
                 \TYPO3\CMS\Extbase\Utility\ExtensionUtility::registerModule(
-                    'Mfc.prometheus',
+                    'Prometheus',
                     'system',
                     'prometheus',
                     '',
                     [
-                        'Backend\Prometheus' => 'getGrafanaContent'
+                        \Mfc\Prometheus\Controller\Backend\PrometheusController::class => 'getGrafanaContent',
                     ],
                     [
                         'access' => 'user,group',
@@ -23,6 +27,6 @@ if ($extconfig['showAdministrationModule'] == true) {
                 );
             }
         },
-        $_EXTKEY
+        'prometheus'
     );
 }

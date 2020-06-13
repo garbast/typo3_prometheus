@@ -1,4 +1,18 @@
 <?php
+
+/*
+ * This file is part of the Mfc\Prometheus project.
+ *
+ * It is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License, either version 2
+ * of the License, or any later version.
+ *
+ * For the full copyright and license information, please read the
+ * LICENSE.txt file that was distributed with this source code.
+ *
+ * The TYPO3 project - inspiring people to share!
+ */
+
 namespace Mfc\Prometheus\Domain\Repository;
 
 class SysLogRepository extends BaseRepository
@@ -59,7 +73,7 @@ class SysLogRepository extends BaseRepository
 
 
         foreach ($insertedRecords as $singleContentTypes) {
-            $key = 'typo3_sys_log_inserted_records_total{tablename="'. $singleContentTypes['tablename'] .'"}';
+            $key = 'typo3_sys_log_inserted_records_total{tablename="' . $singleContentTypes['tablename'] . '"}';
             $data[$key] = $singleContentTypes['count'];
         }
 
@@ -74,7 +88,7 @@ class SysLogRepository extends BaseRepository
 
 
         foreach ($deletedRecords as $singleContentTypes) {
-            $key = 'typo3_sys_log_deleted_records_total{tablename="'. $singleContentTypes['tablename'] .'"}';
+            $key = 'typo3_sys_log_deleted_records_total{tablename="' . $singleContentTypes['tablename'] . '"}';
             $data[$key] = $singleContentTypes['count'];
         }
 
@@ -88,7 +102,7 @@ class SysLogRepository extends BaseRepository
 
 
         foreach ($updatedRecords as $singleContentTypes) {
-            $key = 'typo3_sys_log_updated_records_total{tablename="'. $singleContentTypes['tablename'] .'"}';
+            $key = 'typo3_sys_log_updated_records_total{tablename="' . $singleContentTypes['tablename'] . '"}';
             $data[$key] = $singleContentTypes['count'];
         }
 

@@ -1,6 +1,6 @@
 <?php
 
-$EM_CONF['prometheus'] = array(
+$EM_CONF['prometheus'] = [
     'title' => 'Prometheus TYPO3 connector',
     'description' => '',
     'category' => 'plugin',
@@ -12,20 +12,19 @@ $EM_CONF['prometheus'] = array(
     'createDirs' => '',
     'modify_tables' => '',
     'clearCacheOnLoad' => 0,
-    'version' => '0.0.2',
-    'constraints' => array(
-        'depends' => array(
+    'version' => '0.0.3',
+    'constraints' => [
+        'depends' => [
             'scheduler' => '',
             'php' => '5.6.7-7.99.99',
-            'typo3' => '7.6.23-8.99.99',
-        ),
-        'conflicts' => array(),
+            'typo3' => '9.5.19-10.4.99',
+        ],
+        'conflicts' => [],
 
-    ),
-    'autoload' => array(
-
-        'psr-4' => array(
+    ],
+    'autoload' => [
+        'psr-4' => [
             'Mfc\\Prometheus\\' => 'Classes/',
-        )
-    )
-);
+        ],
+    ],
+];
