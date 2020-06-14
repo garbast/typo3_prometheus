@@ -11,7 +11,6 @@ call_user_func(function () {
         \Mfc\Prometheus\Services\Metrics\FeUsersMetrics::class,
         \Mfc\Prometheus\Services\Metrics\BeSessionsMetrics::class,
         \Mfc\Prometheus\Services\Metrics\BeUsersMetrics::class,
-        \Mfc\Prometheus\Services\Metrics\SysDomainMetrics::class,
         \Mfc\Prometheus\Services\Metrics\SysLockedRecordsMetrics::class,
         \Mfc\Prometheus\Services\Metrics\CfCachePagesMetrics::class,
         \Mfc\Prometheus\Services\Metrics\CfCachePagesTagsMetrics::class,
