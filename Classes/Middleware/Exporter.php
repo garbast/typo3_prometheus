@@ -39,7 +39,7 @@ class Exporter implements MiddlewareInterface
      */
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
-        if ($_SERVER['REQUEST_URI'] !== '/metrics') {
+        if ($request->getServerParams()['REQUEST_URI'] !== '/metrics') {
             return $handler->handle($request);
         }
 
@@ -53,11 +53,12 @@ class Exporter implements MiddlewareInterface
             $returnData = implode(PHP_EOL, array_keys($metricController->getAllMetrics())) . PHP_EOL;
             $response->getBody()->write($returnData);
 
-            $response = $response->withHeader('Cache-Control', 'no-cache, must-revalidate');
-            $response = $response->withHeader('Content-Type', 'text/plain; charset=utf-8');
-            $response = $response->withHeader('Expires', 'Mon, 26 Jul 1997 05:00:00 GMT');
-            $response = $response->withHeader('Last-Modified', gmdate('D, d M Y H:i:s') . ' GMT');
-            $response = $response->withHeader('Pragma', 'no-cache');
+            $response = $response
+                ->withHeader('Cache-Control', 'no-cache, must-revalidate')
+                ->withHeader('Content-Type', 'text/plain; charset=utf-8')
+                ->withHeader('Expires', 'Mon, 26 Jul 1997 05:00:00 GMT')
+                ->withHeader('Last-Modified', gmdate('D, d M Y H:i:s') . ' GMT')
+                ->withHeader('Pragma', 'no-cache');
         } else {
             $response = $response->withStatus(403, 'Forbidden');
         }
