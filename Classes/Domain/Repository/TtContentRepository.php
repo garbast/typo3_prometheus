@@ -37,10 +37,10 @@ class TtContentRepository extends BaseRepository
         foreach ($contentTypesByLanguage as $contentTypeByLanguage) {
             $key = 'typo3_tt_content_total{sys_language_uid="' . $contentTypeByLanguage['sys_language_uid'] . '"';
             if ($contentTypeByLanguage['CType'] !== 'list') {
-                $key .= ', CType="' . $contentTypeByLanguage['CType'] . '"';
+                $key .= ',CType="' . $contentTypeByLanguage['CType'] . '"';
             }
             if ($contentTypeByLanguage['list_type'] !== '') {
-                $key .= ', list_type="' . $contentTypeByLanguage['list_type'] . '"';
+                $key .= ',list_type="' . $contentTypeByLanguage['list_type'] . '"';
             }
             $key .= '}';
             $data[$key] = $contentTypeByLanguage['count'];

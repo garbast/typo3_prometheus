@@ -44,8 +44,8 @@ class PowermailRepository extends BaseRepository
         $mailSum = 0;
         foreach ($forms as $formData) {
             $dataKey = 'typo3_powermail_form_mails_total{form_title="'
-                . addcslashes($formData['title'], '"\\')
-                . '", form_uid="' . $formData['uid'] . '"}';
+                . addcslashes(str_replace(' ', '-', $formData['title']), '"\\')
+                . '",form_uid="' . $formData['uid'] . '"}';
             $data[$dataKey] = $formData['mail_count'];
             $mailSum += $formData['mail_count'];
         }
