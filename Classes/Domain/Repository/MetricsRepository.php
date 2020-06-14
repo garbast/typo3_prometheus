@@ -9,8 +9,6 @@
  *
  * For the full copyright and license information, please read the
  * LICENSE.txt file that was distributed with this source code.
- *
- * The TYPO3 project - inspiring people to share!
  */
 
 namespace Mfc\Prometheus\Domain\Repository;
@@ -25,7 +23,6 @@ class MetricsRepository extends BaseRepository
         $result = $queryBuilder
             ->selectLiteral('CONCAT(metric_key, \' \', metric_value) AS row')
             ->from($this->tableName)
-            ->where($queryBuilder->expr()->eq('sys_language_uid', 0))
             ->execute();
 
         $rows = [];

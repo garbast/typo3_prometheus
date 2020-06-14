@@ -9,37 +9,38 @@
  *
  * For the full copyright and license information, please read the
  * LICENSE.txt file that was distributed with this source code.
- *
- * The TYPO3 project - inspiring people to share!
  */
 
 namespace Mfc\Prometheus\Eid;
 
 use Mfc\Prometheus\Domain\Repository\MetricsRepository;
 use Mfc\Prometheus\Services\IpAddressService;
+use TYPO3\CMS\Core\Http\Response;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 class Metrics
 {
-    public function processRequest()
+    public function processRequest(): Response
     {
+        /** @var Response $response */
+        $response = GeneralUtility::makeInstance(Response::class);
         /** @var IpAddressService $ipHelper */
         $ipHelper = GeneralUtility::makeInstance(IpAddressService::class);
         if ($ipHelper->ipInAllowedRange()) {
             /** @var MetricsRepository $metricController */
             $metricController = GeneralUtility::makeInstance(MetricsRepository::class);
+            $returnData = implode(PHP_EOL, array_keys($metricController->getAllMetrics())) . PHP_EOL;
+            $response->getBody()->write($returnData);
 
-            $returnData = implode(PHP_EOL, array_keys($metricController->getAllMetrics()));
-
-            header('Expires: Mon, 26 Jul 1997 05:00:00 GMT');
-            header('Last-Modified: ' . gmdate('D, d M Y H:i:s') . ' GMT');
-            header('Cache-Control: no-cache, must-revalidate');
-            header('Pragma: no-cache');
-            header('Content-Type: text/plain; charset=utf-8');
-
-            echo $returnData . PHP_EOL;
+            $response = $response->withHeader('Cache-Control', 'no-cache, must-revalidate');
+            $response = $response->withHeader('Content-Type', 'text/plain; charset=utf-8');
+            $response = $response->withHeader('Expires', 'Mon, 26 Jul 1997 05:00:00 GMT');
+            $response = $response->withHeader('Last-Modified', gmdate('D, d M Y H:i:s') . ' GMT');
+            $response = $response->withHeader('Pragma', 'no-cache');
         } else {
-            header('HTTP/1.0 403 Forbidden');
+            $response = $response->withStatus(403, 'Forbidden');
         }
+
+        return $response;
     }
 }
