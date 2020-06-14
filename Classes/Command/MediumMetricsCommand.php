@@ -21,7 +21,7 @@ class MediumMetricsCommand extends AbstractCommand
     protected function configure()
     {
         $this->setDescription('Prepare medium metrics');
-        $this->configure();
+        parent::configure();
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)

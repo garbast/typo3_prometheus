@@ -21,7 +21,7 @@ class SlowMetricsCommand extends AbstractCommand
     protected function configure()
     {
         $this->setDescription('Prepare slow metrics');
-        $this->configure();
+        parent::configure();
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)

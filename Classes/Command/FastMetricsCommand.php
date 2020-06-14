@@ -21,7 +21,7 @@ class FastMetricsCommand extends AbstractCommand
     protected function configure()
     {
         $this->setDescription('Prepare fast metrics');
-        $this->configure();
+        parent::configure();
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
