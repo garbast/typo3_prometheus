@@ -17,46 +17,48 @@ namespace Mfc\Prometheus\Domain\Repository;
 
 class MetricsRepository extends BaseRepository
 {
-    protected $tablename = 'prometheus_metrics';
+    protected $tableName = 'prometheus_metrics';
 
-    /**
-     * @return array
-     */
-    public function getAllMetrics()
+    public function getAllMetrics(): array
     {
-        return $this->getDatabaseConnection()->exec_SELECTgetRows(
-            'concat(metric_key, \' \', metric_value) as row',
-            $this->tablename,
-            '',
-            '',
-            '',
-            '',
-            'row'
-        );
+        $queryBuilder = $this->getQueryBuilderForTable();
+        $result = $queryBuilder
+            ->selectLiteral('CONCAT(metric_key, \' \', metric_value) AS row')
+            ->from($this->tableName)
+            ->where($queryBuilder->expr()->eq('sys_language_uid', 0))
+            ->execute();
+
+        $rows = [];
+        while ($row = $result->fetch()) {
+            $rows[$row['row']] = $row;
+        }
+
+        return $rows;
     }
 
-    /**
-     * @param array $data
-     *
-     * @return void
-     */
-    public function saveDataToDb($data)
+    public function insertMetrics(array $metrics)
     {
-        $this->getDatabaseConnection()->exec_INSERTmultipleRows(
-            $this->tablename,
-            ['metric_key', 'metric_value', 'tstamp'],
-            $data
-        );
+        $queryBuilder = $this->getQueryBuilderForTable();
+
+        foreach ($metrics as $metric) {
+            $queryBuilder
+                ->insert($this->tableName)
+                ->values($metric)
+                ->execute();
+        }
     }
 
-    public function deleteOldMetricData($keys)
+    public function deleteOldMetricData(array $keys)
     {
-        $this->getDatabaseConnection()->exec_DELETEquery(
-            $this->tablename,
-            'metric_key in (' . implode(
-                ',',
-                $this->getDatabaseConnection()->fullQuoteArray($keys, $this->tablename)
-            ) . ')'
-        );
+        $queryBuilder = $this->getQueryBuilderForTable();
+        $queryBuilder
+            ->delete($this->tableName)
+            ->where(
+                $queryBuilder->expr()->in(
+                    'metric_key',
+                    $queryBuilder->createNamedParameter($keys, \Doctrine\DBAL\Connection::PARAM_STR_ARRAY)
+                )
+            )
+            ->execute();
     }
 }

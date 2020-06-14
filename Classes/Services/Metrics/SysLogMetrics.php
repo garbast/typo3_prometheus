@@ -15,17 +15,9 @@
 
 namespace Mfc\Prometheus\Services\Metrics;
 
-use Mfc\Prometheus\Domain\Repository\SysLogRepository;
-
 class SysLogMetrics extends AbstractMetrics
 {
+    protected $repositoryClassName = \Mfc\Prometheus\Domain\Repository\SysLogRepository::class;
+
     protected $velocity = MetricsInterface::MEDIUM;
-
-    public function getMetricsValues()
-    {
-        /** @var \Mfc\Prometheus\Domain\Repository\SysLogRepository $sysLogRepository */
-        $sysLogRepository = $this->objectManager->get(SysLogRepository::class);
-
-        return $this->prepareDataToInsert($sysLogRepository->getMetricsValues());
-    }
 }

@@ -17,18 +17,21 @@ namespace Mfc\Prometheus\Domain\Repository;
 
 class FeSessionsRepository extends BaseRepository
 {
-    public function getMetricsValues()
+    protected $tableName = 'fe_sessions';
+
+    public function getMetricsValues(): array
     {
         $data = [];
 
-        $cachedPages = $this->getDatabaseConnection()->exec_SELECTcountRows(
-            'ses_id',
-            'fe_sessions',
-            '1=1' . $this->getEnableFields('fe_sessions')
-        );
+        $queryBuilder = $this->getQueryBuilderForTable();
+        $frontendSessions = $queryBuilder
+            ->count('ses_id')
+            ->from($this->tableName)
+            ->execute()
+            ->fetchColumn(0);
 
-        if ($cachedPages !== false) {
-            $data['typo3_fe_sessions_total'] = $cachedPages;
+        if ($frontendSessions !== false) {
+            $data['typo3_fe_sessions_total'] = $frontendSessions;
         }
 
         return $data;

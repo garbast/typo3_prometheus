@@ -17,18 +17,21 @@ namespace Mfc\Prometheus\Domain\Repository;
 
 class BeUsersRepository extends BaseRepository
 {
-    public function getMetricsValues()
+    protected $tableName = 'be_users';
+
+    public function getMetricsValues(): array
     {
         $data = [];
 
-        $cachedPages = $this->getDatabaseConnection()->exec_SELECTcountRows(
-            'uid',
-            'be_users',
-            '1=1' . $this->getEnableFields('be_users')
-        );
+        $queryBuilder = $this->getQueryBuilderForTable();
+        $backendUsers = $queryBuilder
+            ->count('uid')
+            ->from($this->tableName)
+            ->execute()
+            ->fetchColumn(0);
 
-        if ($cachedPages !== false) {
-            $data['typo3_be_users_total'] = $cachedPages;
+        if ($backendUsers !== false) {
+            $data['typo3_be_users_total'] = $backendUsers;
         }
 
         return $data;

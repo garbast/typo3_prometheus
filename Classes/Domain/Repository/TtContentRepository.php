@@ -17,17 +17,22 @@ namespace Mfc\Prometheus\Domain\Repository;
 
 class TtContentRepository extends BaseRepository
 {
-    public function getMetricsValues()
+    protected $tableName = 'tt_content';
+
+    public function getMetricsValues(): array
     {
         $data = [];
 
-        $contentTypesByLanguage = $this->getDatabaseConnection()->exec_SELECTgetRows(
-            'count(uid) as count, sys_language_uid, cType',
-            'tt_content',
-            'sys_language_uid >=0' . $this->getEnableFields('tt_content'),
-            'sys_language_uid, cType',
-            'sys_language_uid asc'
-        );
+        $queryBuilder = $this->getQueryBuilderForTable();
+        $contentTypesByLanguage = $queryBuilder
+            ->selectLiteral('COUNT(uid) AS count')
+            ->select('sys_language_uid', 'CType', 'list_type')
+            ->from($this->tableName)
+            ->where($queryBuilder->expr()->gte('sys_language_uid', 0))
+            ->groupBy('sys_language_uid', 'CType', 'list_type')
+            ->orderBy('sys_language_uid', 'ASC')
+            ->execute()
+            ->fetchAll(\Doctrine\DBAL\FetchMode::ASSOCIATIVE);
 
         foreach ($contentTypesByLanguage as $singleContentTypes) {
             $key = 'typo3_tt_content_total{sys_language_uid="' . $singleContentTypes['sys_language_uid']

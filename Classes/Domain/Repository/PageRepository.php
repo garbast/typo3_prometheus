@@ -17,33 +17,51 @@ namespace Mfc\Prometheus\Domain\Repository;
 
 class PageRepository extends BaseRepository
 {
-    public function getMetricsValues()
+    protected $tableName = 'pages';
+
+    public function getMetricsValues(): array
     {
         $data = [];
 
-        $defaultPages = $this->getDatabaseConnection()->exec_SELECTcountRows(
-            'uid',
-            'pages',
-            '1=1' . $this->getEnableFields('pages')
-        );
+        $data = $this->getDefaultPages($data);
+        $data = $this->getPageTranslations($data);
 
-        $pageOverlays = $this->getDatabaseConnection()->exec_SELECTgetRows(
-            'count(uid) as count, sys_language_uid',
-            'pages_language_overlay',
-            'sys_language_uid > 0' . $this->getEnableFields('pages_language_overlay'),
-            'sys_language_uid',
-            'sys_language_uid asc',
-            '',
-            'sys_language_uid'
-        );
+        return $data;
+    }
+
+    protected function getDefaultPages(array $data): array
+    {
+        $queryBuilder = $this->getQueryBuilderForTable();
+        $defaultPages = $queryBuilder
+            ->count('uid')
+            ->from($this->tableName)
+            ->where($queryBuilder->expr()->eq('sys_language_uid', 0))
+            ->execute()
+            ->fetchColumn(0);
 
         if ($defaultPages !== false) {
             $data['typo3_pages_total{sys_language_uid="0"}'] = $defaultPages;
         }
 
-        foreach ($pageOverlays as $singlePageLanguageKey => $singlePageLanguageKeyValues) {
-            $data['typo3_pages_total{sys_language_uid="' . $singlePageLanguageKey . '"}'] =
-                $singlePageLanguageKeyValues['count'];
+        return $data;
+    }
+
+    protected function getPageTranslations(array $data): array
+    {
+        $queryBuilder = $this->getQueryBuilderForTable();
+        $pageTranslations = $queryBuilder
+            ->selectLiteral('COUNT(uid) AS count')
+            ->select('sys_language_uid')
+            ->from($this->tableName)
+            ->where($queryBuilder->expr()->gt('sys_language_uid', 0))
+            ->groupBy('sys_language_uid')
+            ->orderBy('sys_language_uid', 'ASC')
+            ->execute()
+            ->fetchAll(\Doctrine\DBAL\FetchMode::ASSOCIATIVE);
+
+        foreach ($pageTranslations as $pageTranslation) {
+            $data['typo3_pages_total{sys_language_uid="' . $pageTranslation['sys_language_uid'] . '"}'] =
+                $pageTranslation['count'];
         }
 
         return $data;

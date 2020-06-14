@@ -15,17 +15,9 @@
 
 namespace Mfc\Prometheus\Services\Metrics;
 
-use Mfc\Prometheus\Domain\Repository\BeSessionsRepository;
-
 class BeSessionsMetrics extends AbstractMetrics
 {
+    protected $repositoryClassName = \Mfc\Prometheus\Domain\Repository\BeSessionsRepository::class;
+
     protected $velocity = MetricsInterface::FAST;
-
-    public function getMetricsValues()
-    {
-        /** @var \Mfc\Prometheus\Domain\Repository\BeSessionsRepository $beSessionRepository */
-        $beSessionRepository = $this->objectManager->get(BeSessionsRepository::class);
-
-        return $this->prepareDataToInsert($beSessionRepository->getMetricsValues());
-    }
 }

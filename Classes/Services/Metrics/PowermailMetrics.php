@@ -15,21 +15,9 @@
 
 namespace Mfc\Prometheus\Services\Metrics;
 
-use Mfc\Prometheus\Domain\Repository\PowermailRepository;
-
 class PowermailMetrics extends AbstractMetrics
 {
+    protected $repositoryClassName = \Mfc\Prometheus\Domain\Repository\PowermailRepository::class;
+
     protected $velocity = MetricsInterface::FAST;
-
-    /**
-     * @return array
-     * @throws \TYPO3\CMS\Extbase\Persistence\Exception\InvalidQueryException
-     */
-    public function getMetricsValues()
-    {
-        /** @var \Mfc\Prometheus\Domain\Repository\PowermailRepository $pageRepository */
-        $pageRepository = $this->objectManager->get(PowermailRepository::class);
-
-        return $this->prepareDataToInsert($pageRepository->getMetricsValues());
-    }
 }

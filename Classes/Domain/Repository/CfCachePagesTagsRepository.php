@@ -17,28 +17,45 @@ namespace Mfc\Prometheus\Domain\Repository;
 
 class CfCachePagesTagsRepository extends BaseRepository
 {
-    public function getMetricsValues()
+    protected $tableName = 'cf_cache_pages_tags';
+
+    public function getMetricsValues(): array
     {
         $data = [];
 
-        $cachedPagesTags = $this->getDatabaseConnection()->exec_SELECTcountRows(
-            'id',
-            'cf_cache_pages_tags',
-            '1=1' . $this->getEnableFields('cf_cache_pages_tags')
-        );
+        $data = $this->getCachePagesTagsTotal($data);
+        $data = $this->getCachePagesTagsDistinct($data);
+
+        return $data;
+    }
+
+    protected function getCachePagesTagsTotal(array $data): array
+    {
+        $queryBuilder = $this->getQueryBuilderForTable();
+        $cachedPagesTags = $queryBuilder
+            ->count('id')
+            ->from($this->tableName)
+            ->execute()
+            ->fetchColumn(0);
 
         if ($cachedPagesTags !== false) {
             $data['typo3_cf_cache_pages_tags_total'] = $cachedPagesTags;
         }
 
-        $cachedPagesTags = $this->getDatabaseConnection()->exec_SELECTcountRows(
-            'distinct(tag)',
-            'cf_cache_pages_tags',
-            '1=1' . $this->getEnableFields('cf_cache_pages_tags')
-        );
+        return $data;
+    }
 
-        if ($cachedPagesTags !== false) {
-            $data['typo3_cf_cache_pages_tags_distinct_total'] = $cachedPagesTags;
+    protected function getCachePagesTagsDistinct(array $data): array
+    {
+        $queryBuilder = $this->getQueryBuilderForTable();
+        $distinctCachedPagesTags = $queryBuilder
+            ->selectLiteral('COUNT(DISTINCT tag)')
+            ->from($this->tableName)
+            ->execute()
+            ->fetchColumn(0);
+
+        if ($distinctCachedPagesTags !== false) {
+            $data['typo3_cf_cache_pages_tags_distinct_total'] = $distinctCachedPagesTags;
         }
 
         return $data;

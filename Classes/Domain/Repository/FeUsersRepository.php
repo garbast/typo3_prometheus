@@ -17,18 +17,21 @@ namespace Mfc\Prometheus\Domain\Repository;
 
 class FeUsersRepository extends BaseRepository
 {
-    public function getMetricsValues()
+    protected $tableName = 'fe_users';
+
+    public function getMetricsValues(): array
     {
         $data = [];
 
-        $users = $this->getDatabaseConnection()->exec_SELECTcountRows(
-            'uid',
-            'fe_users',
-            '1=1' . $this->getEnableFields('fe_users')
-        );
+        $queryBuilder = $this->getQueryBuilderForTable();
+        $frontendUsers = $queryBuilder
+            ->count('uid')
+            ->from($this->tableName)
+            ->execute()
+            ->fetchColumn(0);
 
-        if ($users !== false) {
-            $data['typo3_fe_users_total'] = $users;
+        if ($frontendUsers !== false) {
+            $data['typo3_fe_users_total'] = $frontendUsers;
         }
 
         return $data;

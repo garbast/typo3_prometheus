@@ -15,17 +15,9 @@
 
 namespace Mfc\Prometheus\Services\Metrics;
 
-use Mfc\Prometheus\Domain\Repository\TtContentRepository;
-
 class TtContentMetrics extends AbstractMetrics
 {
+    protected $repositoryClassName = \Mfc\Prometheus\Domain\Repository\TtContentRepository::class;
+
     protected $velocity = MetricsInterface::SLOW;
-
-    public function getMetricsValues()
-    {
-        /** @var \Mfc\Prometheus\Domain\Repository\TtContentRepository $ttContentRepository */
-        $ttContentRepository = $this->objectManager->get(TtContentRepository::class);
-
-        return $this->prepareDataToInsert($ttContentRepository->getMetricsValues());
-    }
 }

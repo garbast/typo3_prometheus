@@ -17,89 +17,166 @@ namespace Mfc\Prometheus\Domain\Repository;
 
 class SysLogRepository extends BaseRepository
 {
-    public function getMetricsValues()
+    protected $tableName = 'sys_log';
+
+    public function getMetricsValues(): array
     {
         $data = [];
 
-        $successfullLogins = $this->getDatabaseConnection()->exec_SELECTcountRows(
-            'uid',
-            'sys_log',
-            'type=255 and error=0' . $this->getEnableFields('sys_log')
-        );
+        $data = $this->getSuccessfulLogins($data);
+        $data = $this->getFailedLogins($data);
+        $data = $this->getCaptchaFailedLogins($data);
+        $data = $this->getClearCaches($data);
+        $data = $this->getInsertedRecords($data);
+        $data = $this->getDeletedRecords($data);
+        $data = $this->getUpdatedRecords($data);
 
-        if ($successfullLogins !== false) {
-            $data['typo3_sys_log_successfull_logins_total'] = $successfullLogins;
+        return $data;
+    }
+
+    protected function getSuccessfulLogins(array $data): array
+    {
+        $queryBuilder = $this->getQueryBuilderForTable();
+        $successfulLogins = $queryBuilder
+            ->count('uid')
+            ->from($this->tableName)
+            ->where(
+                $queryBuilder->expr()->eq('type', 255),
+                $queryBuilder->expr()->eq('error', 0)
+            )
+            ->execute()
+            ->fetchColumn(0);
+
+        if ($successfulLogins !== false) {
+            $data['typo3_sys_log_successfull_logins_total'] = $successfulLogins;
         }
 
-        $failedLogins = $this->getDatabaseConnection()->exec_SELECTcountRows(
-            'uid',
-            'sys_log',
-            'type=255 and error=3' . $this->getEnableFields('sys_log')
-        );
+        return $data;
+    }
+
+    protected function getFailedLogins(array $data): array
+    {
+        $queryBuilder = $this->getQueryBuilderForTable();
+        $failedLogins = $queryBuilder
+            ->count('uid')
+            ->from($this->tableName)
+            ->where(
+                $queryBuilder->expr()->eq('type', 255),
+                $queryBuilder->expr()->eq('error', 3)
+            )
+            ->execute()
+            ->fetchColumn(0);
 
         if ($failedLogins !== false) {
             $data['typo3_sys_log_failed_logins_total'] = $failedLogins;
         }
 
-        $captchafailedLogins = $this->getDatabaseConnection()->exec_SELECTcountRows(
-            'uid',
-            'sys_log',
-            'type=255 and error=3 and details_nr =3' . $this->getEnableFields('sys_log')
-        );
+        return $data;
+    }
 
-        if ($captchafailedLogins !== false) {
-            $data['typo3_sys_log_captcha_failed_logins_total'] = $captchafailedLogins;
+    protected function getCaptchaFailedLogins(array $data): array
+    {
+        $queryBuilder = $this->getQueryBuilderForTable();
+        $captchaFailedLogins = $queryBuilder
+            ->count('uid')
+            ->from($this->tableName)
+            ->where(
+                $queryBuilder->expr()->eq('type', 255),
+                $queryBuilder->expr()->eq('error', 3),
+                $queryBuilder->expr()->eq('details_nr', 3)
+            )
+            ->execute()
+            ->fetchColumn(0);
+
+        if ($captchaFailedLogins !== false) {
+            $data['typo3_sys_log_captcha_failed_logins_total'] = $captchaFailedLogins;
         }
 
+        return $data;
+    }
 
-        $clearCaches = $this->getDatabaseConnection()->exec_SELECTcountRows(
-            'uid',
-            'sys_log',
-            'type=3' . $this->getEnableFields('sys_log')
-        );
+    protected function getClearCaches(array $data): array
+    {
+        $queryBuilder = $this->getQueryBuilderForTable();
+        $clearCaches = $queryBuilder
+            ->count('uid')
+            ->from($this->tableName)
+            ->where(
+                $queryBuilder->expr()->eq('type', 3)
+            )
+            ->execute()
+            ->fetchColumn(0);
 
         if ($clearCaches !== false) {
             $data['typo3_sys_log_cleared_caches_total'] = $clearCaches;
         }
 
+        return $data;
+    }
 
-        $insertedRecords = $this->getDatabaseConnection()->exec_SELECTgetRows(
-            'count(uid) as count,tablename',
-            'sys_log',
-            'type = 1  and action = 1' . $this->getEnableFields('sys_log'),
-            'tablename',
-            'tablename asc'
-        );
+    protected function getInsertedRecords(array $data): array
+    {
+        $queryBuilder = $this->getQueryBuilderForTable();
+        $insertedRecords = $queryBuilder
+            ->select('tablename')
+            ->selectLiteral('COUNT(uid) AS count')
+            ->from($this->tableName)
+            ->where(
+                $queryBuilder->expr()->eq('type', 1),
+                $queryBuilder->expr()->eq('action', 1)
+            )
+            ->groupBy('tablename')
+            ->orderBy('tablename', 'ASC')
+            ->execute()
+            ->fetchAll(\Doctrine\DBAL\FetchMode::ASSOCIATIVE);
 
-
-        foreach ($insertedRecords as $singleContentTypes) {
-            $key = 'typo3_sys_log_inserted_records_total{tablename="' . $singleContentTypes['tablename'] . '"}';
-            $data[$key] = $singleContentTypes['count'];
+        foreach ($insertedRecords as $insertedRecord) {
+            $key = 'typo3_sys_log_inserted_records_total{tablename="' . $insertedRecord['tablename'] . '"}';
+            $data[$key] = $insertedRecord['count'];
         }
 
+        return $data;
+    }
 
-        $deletedRecords = $this->getDatabaseConnection()->exec_SELECTgetRows(
-            'count(uid) as count,tablename',
-            'sys_log',
-            'type = 1 and action = 3' . $this->getEnableFields('sys_log'),
-            'tablename',
-            'tablename asc'
-        );
+    protected function getDeletedRecords(array $data): array
+    {
+        $queryBuilder = $this->getQueryBuilderForTable();
+        $deletedRecords = $queryBuilder
+            ->select('tablename')
+            ->selectLiteral('COUNT(uid) AS count')
+            ->from($this->tableName)
+            ->where(
+                $queryBuilder->expr()->eq('type', 1),
+                $queryBuilder->expr()->eq('action', 3)
+            )
+            ->groupBy('tablename')
+            ->orderBy('tablename', 'ASC')
+            ->execute()
+            ->fetchAll(\Doctrine\DBAL\FetchMode::ASSOCIATIVE);
 
-
-        foreach ($deletedRecords as $singleContentTypes) {
-            $key = 'typo3_sys_log_deleted_records_total{tablename="' . $singleContentTypes['tablename'] . '"}';
-            $data[$key] = $singleContentTypes['count'];
+        foreach ($deletedRecords as $deletedRecord) {
+            $key = 'typo3_sys_log_deleted_records_total{tablename="' . $deletedRecord['tablename'] . '"}';
+            $data[$key] = $deletedRecord['count'];
         }
 
-        $updatedRecords = $this->getDatabaseConnection()->exec_SELECTgetRows(
-            'count(uid) as count,tablename',
-            'sys_log',
-            'type = 1 and action = 2' . $this->getEnableFields('sys_log'),
-            'tablename',
-            'tablename asc'
-        );
+        return $data;
+    }
 
+    protected function getUpdatedRecords(array $data): array
+    {
+        $queryBuilder = $this->getQueryBuilderForTable();
+        $updatedRecords = $queryBuilder
+            ->select('tablename')
+            ->selectLiteral('COUNT(uid) AS count')
+            ->from($this->tableName)
+            ->where(
+                $queryBuilder->expr()->eq('type', 1),
+                $queryBuilder->expr()->eq('action', 2)
+            )
+            ->groupBy('tablename')
+            ->orderBy('tablename', 'ASC')
+            ->execute()
+            ->fetchAll(\Doctrine\DBAL\FetchMode::ASSOCIATIVE);
 
         foreach ($updatedRecords as $singleContentTypes) {
             $key = 'typo3_sys_log_updated_records_total{tablename="' . $singleContentTypes['tablename'] . '"}';

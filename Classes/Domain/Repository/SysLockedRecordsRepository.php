@@ -17,17 +17,21 @@ namespace Mfc\Prometheus\Domain\Repository;
 
 class SysLockedRecordsRepository extends BaseRepository
 {
-    public function getMetricsValues()
+    protected $tableName = 'sys_lockedrecords';
+
+    public function getMetricsValues(): array
     {
         $data = [];
 
-        $lockedRecords = $this->getDatabaseConnection()->exec_SELECTgetRows(
-            'count(uid) as count,record_table',
-            'sys_lockedrecords',
-            '1=1' . $this->getEnableFields('sys_lockedrecords'),
-            'record_table',
-            'record_table asc'
-        );
+        $queryBuilder = $this->getQueryBuilderForTable();
+        $lockedRecords = $queryBuilder
+            ->select('record_table')
+            ->selectLiteral('COUNT(uid) AS count')
+            ->from($this->tableName)
+            ->groupBy('record_table')
+            ->orderBy('record_table', 'ASC')
+            ->execute()
+            ->fetchAll(\Doctrine\DBAL\FetchMode::ASSOCIATIVE);
 
         foreach ($lockedRecords as $singleContentTypes) {
             $key = 'typo3_sys_locked_records_total{record_table="' . $singleContentTypes['record_table'] . '"}';

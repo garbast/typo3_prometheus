@@ -15,7 +15,6 @@
 
 namespace Mfc\Prometheus\Services\Metrics;
 
-use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Object\ObjectManager;
 
 abstract class AbstractMetrics implements MetricsInterface
@@ -28,6 +27,11 @@ abstract class AbstractMetrics implements MetricsInterface
     /**
      * @var string
      */
+    protected $repositoryClassName = '';
+
+    /**
+     * @var string
+     */
     protected $velocity = MetricsInterface::SLOW;
 
     /**
@@ -35,38 +39,38 @@ abstract class AbstractMetrics implements MetricsInterface
      */
     public function __construct()
     {
-        $this->objectManager = GeneralUtility::makeInstance(ObjectManager::class);
+        $this->objectManager = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(ObjectManager::class);
     }
 
-    /**
-     * @return string
-     */
-    public function getVelocity()
+    public function getVelocity(): string
     {
         return $this->velocity;
     }
 
-    /**
-     * @return array
-     */
-    public function getMetricsValues()
+    public function getMetricsValues(): array
     {
-        return [];
+        return $this->prepareDataToInsert($this->getRepository()->getMetricsValues());
     }
 
-    /**
-     * @param array $data
-     *
-     * @return array
-     */
-    protected function prepareDataToInsert($data)
+    protected function prepareDataToInsert(array $data): array
     {
         $output = [];
 
         foreach ($data as $dataKey => $dataValue) {
-            $output[$dataKey] = [$dataKey, $dataValue, $GLOBALS['EXEC_TIME']];
+            $output[$dataKey] = [
+                'metric_key' => $dataKey,
+                'metric_value' => $dataValue,
+                'tstamp' => $GLOBALS['EXEC_TIME']
+            ];
         }
 
         return $output;
+    }
+
+    protected function getRepository(): \Mfc\Prometheus\Domain\Repository\BaseRepository
+    {
+        /** @var \Mfc\Prometheus\Domain\Repository\BaseRepository $repository */
+        $repository = $this->objectManager->get($this->repositoryClassName);
+        return $repository;
     }
 }

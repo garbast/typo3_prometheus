@@ -15,17 +15,9 @@
 
 namespace Mfc\Prometheus\Services\Metrics;
 
-use Mfc\Prometheus\Domain\Repository\FeUsersRepository;
-
 class FeUsersMetrics extends AbstractMetrics
 {
+    protected $repositoryClassName = \Mfc\Prometheus\Domain\Repository\FeUsersRepository::class;
+
     protected $velocity = MetricsInterface::FAST;
-
-    public function getMetricsValues()
-    {
-        /** @var \Mfc\Prometheus\Domain\Repository\FeUsersRepository $feUsersRepository */
-        $feUsersRepository = $this->objectManager->get(FeUsersRepository::class);
-
-        return $this->prepareDataToInsert($feUsersRepository->getMetricsValues());
-    }
 }

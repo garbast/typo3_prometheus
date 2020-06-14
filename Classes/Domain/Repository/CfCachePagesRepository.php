@@ -17,15 +17,18 @@ namespace Mfc\Prometheus\Domain\Repository;
 
 class CfCachePagesRepository extends BaseRepository
 {
-    public function getMetricsValues()
+    protected $tableName = 'cf_cache_pages';
+
+    public function getMetricsValues(): array
     {
         $data = [];
 
-        $cachedPages = $this->getDatabaseConnection()->exec_SELECTcountRows(
-            'id',
-            'cf_cache_pages',
-            '1=1' . $this->getEnableFields('cf_cache_pages')
-        );
+        $queryBuilder = $this->getQueryBuilderForTable();
+        $cachedPages = $queryBuilder
+            ->count('id')
+            ->from($this->tableName)
+            ->execute()
+            ->fetchColumn(0);
 
         if ($cachedPages !== false) {
             $data['typo3_cf_cache_pages_total'] = $cachedPages;

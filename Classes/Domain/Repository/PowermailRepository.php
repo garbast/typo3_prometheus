@@ -17,35 +17,38 @@ namespace Mfc\Prometheus\Domain\Repository;
 
 class PowermailRepository extends BaseRepository
 {
-    /**
-     * @return array
-     */
-    public function getMetricsValues()
+    protected $tableName = 'tx_powermail_domain_model_form';
+
+    public function getMetricsValues(): array
     {
         $data = [];
 
-        $forms = $this->getDatabaseConnection()->exec_SELECTgetRows(
-            'tx_powermail_domain_model_form.uid, tx_powermail_domain_model_form.title, count(mail.uid) AS mail_count',
-            'tx_powermail_domain_model_form, tx_powermail_domain_model_mail AS mail',
-            'tx_powermail_domain_model_form.uid = mail.form' . $this->getEnableFields('tx_powermail_domain_model_form'),
-            'tx_powermail_domain_model_form.uid',
-            '',
-            '',
-            'uid'
-        );
+        $queryBuilder = $this->getQueryBuilderForTable();
+        $forms = $queryBuilder
+            ->select('f.uid', 'f.title')
+            ->selectLiteral('COUNT(m.uid) AS mail_count')
+            ->from($this->tableName, 'f')
+            ->innerJoin(
+                'f',
+                'tx_powermail_domain_model_mail',
+                'm',
+                $queryBuilder->expr()->eq('f.uid', 'm.form')
+            )
+            ->where($queryBuilder->expr()->eq('sys_language_uid', 0))
+            ->groupBy('f.uid')
+            ->execute()
+            ->fetchAll(\Doctrine\DBAL\FetchMode::ASSOCIATIVE);
 
         if ($forms !== null) {
             $data['typo3_powermail_forms_total'] = count($forms);
         }
 
-
         $mailSum = 0;
-        foreach ($forms as $formUid => $formData) {
-            $data['typo3_powermail_form_mails_total{form_title="' . addcslashes(
-                $formData['title'],
-                '"\\'
-            ) . '", form_uid="' . $formUid . '"}'] =
-                $formData['mail_count'];
+        foreach ($forms as $formData) {
+            $dataKey = 'typo3_powermail_form_mails_total{form_title="'
+                . addcslashes($formData['title'], '"\\')
+                . '", form_uid="' . $formData['uid'] . '"}';
+            $data[$dataKey] = $formData['mail_count'];
             $mailSum += $formData['mail_count'];
         }
 

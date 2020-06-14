@@ -15,17 +15,9 @@
 
 namespace Mfc\Prometheus\Services\Metrics;
 
-use Mfc\Prometheus\Domain\Repository\CfCachePagesTagsRepository;
-
 class CfCachePagesTagsMetrics extends AbstractMetrics
 {
+    protected $repositoryClassName = \Mfc\Prometheus\Domain\Repository\CfCachePagesTagsRepository::class;
+
     protected $velocity = MetricsInterface::FAST;
-
-    public function getMetricsValues()
-    {
-        /** @var \Mfc\Prometheus\Domain\Repository\CfCachePagesTagsRepository $cfCachePagesTagsRepository */
-        $cfCachePagesTagsRepository = $this->objectManager->get(CfCachePagesTagsRepository::class);
-
-        return $this->prepareDataToInsert($cfCachePagesTagsRepository->getMetricsValues());
-    }
 }

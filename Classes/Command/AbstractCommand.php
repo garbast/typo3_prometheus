@@ -55,11 +55,12 @@ class AbstractCommand extends \Symfony\Component\Console\Command\Command
 
     protected function getValuesAndWriteToDb()
     {
+        /** @var $singleMetrics \Mfc\Prometheus\Services\Metrics\MetricsInterface $singleMetrics */
         foreach ($this->metricsToWork as $singleMetrics) {
             $dataToInsert = $singleMetrics->getMetricsValues();
             if (!empty($dataToInsert)) {
                 $this->metricsRepository->deleteOldMetricData(array_keys($dataToInsert));
-                $this->metricsRepository->saveDataToDb($dataToInsert);
+                $this->metricsRepository->insertMetrics($dataToInsert);
             }
         }
     }
