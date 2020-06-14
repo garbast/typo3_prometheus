@@ -375,7 +375,7 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "typo3_cf_cache_pages_tags_distinct_total",
+              "expr": "typo3_cache_pages_tags_distinct_total",
               "format": "time_series",
               "intervalFactor": 2,
               "legendFormat": "Cache pages",
@@ -450,7 +450,7 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "sum(typo3_cf_cache_pages_tags_distinct_total) / sum(typo3_pages_total{sys_language_uid=~\"$sys_language_uid\"}) ",
+              "expr": "sum(typo3_cache_pages_tags_distinct_total) / sum(typo3_pages_total{sys_language_uid=~\"$sys_language_uid\"}) ",
               "format": "time_series",
               "instant": false,
               "intervalFactor": 2,
@@ -1837,18 +1837,18 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "sum(typo3_tt_content_total{sys_language_uid=~\"$sys_language_uid\",cType=~\"$ctype.*\"}) by (cType)",
+              "expr": "sum(typo3_tt_content_total{sys_language_uid=~\"$sys_language_uid\", CType=~\"$CType.*\"}) by (CType)",
               "format": "time_series",
               "interval": "",
               "intervalFactor": 2,
-              "legendFormat": "Total by cType {{ cType }}",
+              "legendFormat": "Total by CType {{ CType }}",
               "refId": "B"
             }
           ],
           "thresholds": [],
           "timeFrom": null,
           "timeShift": null,
-          "title": "Content elements grouped by cType",
+          "title": "Content elements grouped by CType",
           "tooltip": {
             "shared": true,
             "sort": 2,
@@ -1913,7 +1913,170 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "sum(typo3_tt_content_total{sys_language_uid=~\"$sys_language_uid\",cType=~\"$ctype.*\"}) by (sys_language_uid)",
+              "expr": "sum(typo3_tt_content_total{sys_language_uid=~\"$sys_language_uid\",CType=~\"$CType.*\"}) by (sys_language_uid)",
+              "format": "time_series",
+              "intervalFactor": 2,
+              "legendFormat": "Total by  Language UID {{ sys_language_uid }}",
+              "refId": "C"
+            }
+          ],
+          "thresholds": [],
+          "timeFrom": null,
+          "timeShift": null,
+          "title": "Content elements grouped by language UID",
+          "tooltip": {
+            "shared": true,
+            "sort": 2,
+            "value_type": "individual"
+          },
+          "type": "graph",
+          "xaxis": {
+            "buckets": null,
+            "mode": "time",
+            "name": null,
+            "show": true,
+            "values": []
+          },
+          "yaxes": [
+            {
+              "format": "short",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            },
+            {
+              "format": "short",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            }
+          ]
+        }
+      ],
+      "repeat": null,
+      "repeatIteration": null,
+      "repeatRowId": null,
+      "showTitle": true,
+      "title": "tt_content grouped",
+      "titleSize": "h6"
+    },
+    {
+      "collapse": false,
+      "height": 250,
+      "panels": [
+        {
+          "aliasColors": {},
+          "bars": false,
+          "dashLength": 10,
+          "dashes": false,
+          "datasource": "prometheus",
+          "fill": 1,
+          "id": 6,
+          "legend": {
+            "avg": false,
+            "current": false,
+            "max": false,
+            "min": false,
+            "show": true,
+            "total": false,
+            "values": false
+          },
+          "lines": true,
+          "linewidth": 1,
+          "links": [],
+          "nullPointMode": "null",
+          "percentage": false,
+          "pointradius": 5,
+          "points": false,
+          "renderer": "flot",
+          "seriesOverrides": [],
+          "spaceLength": 10,
+          "span": 6,
+          "stack": false,
+          "steppedLine": false,
+          "targets": [
+            {
+              "expr": "sum(typo3_tt_content_total{sys_language_uid=~\"$sys_language_uid\", list_type=~\"$list_type.*\"}) by (list_type)",
+              "format": "time_series",
+              "interval": "",
+              "intervalFactor": 2,
+              "legendFormat": "Total by list_type {{ list_type }}",
+              "refId": "B"
+            }
+          ],
+          "thresholds": [],
+          "timeFrom": null,
+          "timeShift": null,
+          "title": "Content elements grouped by list_type",
+          "tooltip": {
+            "shared": true,
+            "sort": 2,
+            "value_type": "individual"
+          },
+          "type": "graph",
+          "xaxis": {
+            "buckets": null,
+            "mode": "time",
+            "name": null,
+            "show": true,
+            "values": []
+          },
+          "yaxes": [
+            {
+              "format": "short",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            },
+            {
+              "format": "short",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            }
+          ]
+        },
+        {
+          "aliasColors": {},
+          "bars": false,
+          "dashLength": 10,
+          "dashes": false,
+          "datasource": "prometheus",
+          "fill": 1,
+          "id": 23,
+          "legend": {
+            "avg": false,
+            "current": false,
+            "max": false,
+            "min": false,
+            "show": true,
+            "total": false,
+            "values": false
+          },
+          "lines": true,
+          "linewidth": 1,
+          "links": [],
+          "nullPointMode": "null",
+          "percentage": false,
+          "pointradius": 5,
+          "points": false,
+          "renderer": "flot",
+          "seriesOverrides": [],
+          "spaceLength": 10,
+          "span": 6,
+          "stack": false,
+          "steppedLine": false,
+          "targets": [
+            {
+              "expr": "sum(typo3_tt_content_total{sys_language_uid=~\"$sys_language_uid\",list_type=~\"$list_type.*\"}) by (sys_language_uid)",
               "format": "time_series",
               "intervalFactor": 2,
               "legendFormat": "Total by  Language UID {{ sys_language_uid }}",

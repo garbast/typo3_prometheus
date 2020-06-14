@@ -33,6 +33,7 @@ class TtContentRepository extends BaseRepository
             ->execute()
             ->fetchAll(\Doctrine\DBAL\FetchMode::ASSOCIATIVE);
 
+        $contentSum = 0;
         foreach ($contentTypesByLanguage as $contentTypeByLanguage) {
             $key = 'typo3_tt_content_total{sys_language_uid="' . $contentTypeByLanguage['sys_language_uid'] . '"';
             if ($contentTypeByLanguage['CType'] !== 'list') {
@@ -43,7 +44,10 @@ class TtContentRepository extends BaseRepository
             }
             $key .= '}';
             $data[$key] = $contentTypeByLanguage['count'];
+            $contentSum += $contentTypeByLanguage['count'];
         }
+
+        $data['typo3_tt_content_total'] = $contentSum;
 
         return $data;
     }

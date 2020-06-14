@@ -1,9 +1,6 @@
 <?php
 
 call_user_func(function () {
-    $GLOBALS['TYPO3_CONF_VARS']['FE']['eID_include']['prometheus_metrics'] =
-        \Mfc\Prometheus\Eid\Metrics::class . '::processRequest';
-
     $fast = \Mfc\Prometheus\Services\Metrics\MetricsInterface::FAST;
     $medium = \Mfc\Prometheus\Services\Metrics\MetricsInterface::MEDIUM;
     $slow = \Mfc\Prometheus\Services\Metrics\MetricsInterface::SLOW;

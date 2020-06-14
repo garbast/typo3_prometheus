@@ -1,7 +1,7 @@
 <?php
 
 /*
- * This file is part of the Mfc\Prometheus project.
+ * This file is developed by CP/COMPARTNER.
  *
  * It is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License, either version 2
@@ -11,17 +11,38 @@
  * LICENSE.txt file that was distributed with this source code.
  */
 
-namespace Mfc\Prometheus\Eid;
+namespace Mfc\Prometheus\Middleware;
 
 use Mfc\Prometheus\Domain\Repository\MetricsRepository;
 use Mfc\Prometheus\Services\IpAddressService;
+use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\ServerRequestInterface;
+use Psr\Http\Server\MiddlewareInterface;
+use Psr\Http\Server\RequestHandlerInterface;
 use TYPO3\CMS\Core\Http\Response;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
-class Metrics
+class Exporter implements MiddlewareInterface
 {
-    public function processRequest(): Response
+    /**
+     * @var string
+     */
+    protected $extensionKey = 'prometheus';
+
+    /**
+     * Export data for prometheus scraping
+     *
+     * @param ServerRequestInterface $request
+     * @param RequestHandlerInterface $handler
+     *
+     * @return ResponseInterface
+     */
+    public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
+        if ($_SERVER['REQUEST_URI'] !== '/metrics') {
+            return $handler->handle($request);
+        }
+
         /** @var Response $response */
         $response = GeneralUtility::makeInstance(Response::class);
         /** @var IpAddressService $ipHelper */
