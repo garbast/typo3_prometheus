@@ -48,8 +48,8 @@ class PageRepository extends BaseRepository
     {
         $queryBuilder = $this->getQueryBuilderForTable();
         $pageTranslations = $queryBuilder
-            ->selectLiteral('COUNT(uid) AS count')
             ->select('sys_language_uid')
+            ->addSelectLiteral('COUNT(uid) AS count')
             ->from($this->tableName)
             ->where($queryBuilder->expr()->gt('sys_language_uid', 0))
             ->groupBy('sys_language_uid')

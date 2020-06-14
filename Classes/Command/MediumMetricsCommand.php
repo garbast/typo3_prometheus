@@ -13,20 +13,7 @@
 
 namespace Mfc\Prometheus\Command;
 
-use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Output\OutputInterface;
-
 class MediumMetricsCommand extends AbstractCommand
 {
-    protected function configure()
-    {
-        $this->setDescription('Prepare medium metrics');
-        parent::configure();
-    }
-
-    protected function execute(InputInterface $input, OutputInterface $output)
-    {
-        $this->initializeMetrics(\Mfc\Prometheus\Services\Metrics\MetricsInterface::MEDIUM);
-        $this->getValuesAndWriteToDb();
-    }
+    protected $velocity = \Mfc\Prometheus\Services\Metrics\MetricsInterface::MEDIUM;
 }

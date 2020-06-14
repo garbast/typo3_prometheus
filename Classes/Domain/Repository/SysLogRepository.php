@@ -117,7 +117,7 @@ class SysLogRepository extends BaseRepository
         $queryBuilder = $this->getQueryBuilderForTable();
         $insertedRecords = $queryBuilder
             ->select('tablename')
-            ->selectLiteral('COUNT(uid) AS count')
+            ->addSelectLiteral('COUNT(uid) AS count')
             ->from($this->tableName)
             ->where(
                 $queryBuilder->expr()->eq('type', 1),
@@ -141,7 +141,7 @@ class SysLogRepository extends BaseRepository
         $queryBuilder = $this->getQueryBuilderForTable();
         $deletedRecords = $queryBuilder
             ->select('tablename')
-            ->selectLiteral('COUNT(uid) AS count')
+            ->addSelectLiteral('COUNT(uid) AS count')
             ->from($this->tableName)
             ->where(
                 $queryBuilder->expr()->eq('type', 1),
@@ -165,7 +165,7 @@ class SysLogRepository extends BaseRepository
         $queryBuilder = $this->getQueryBuilderForTable();
         $updatedRecords = $queryBuilder
             ->select('tablename')
-            ->selectLiteral('COUNT(uid) AS count')
+            ->addSelectLiteral('COUNT(uid) AS count')
             ->from($this->tableName)
             ->where(
                 $queryBuilder->expr()->eq('type', 1),

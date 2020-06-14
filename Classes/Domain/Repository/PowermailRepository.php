@@ -24,7 +24,7 @@ class PowermailRepository extends BaseRepository
         $queryBuilder = $this->getQueryBuilderForTable();
         $forms = $queryBuilder
             ->select('f.uid', 'f.title')
-            ->selectLiteral('COUNT(m.uid) AS mail_count')
+            ->addSelectLiteral('COUNT(m.uid) AS mail_count')
             ->from($this->tableName, 'f')
             ->innerJoin(
                 'f',

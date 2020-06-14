@@ -23,19 +23,26 @@ class TtContentRepository extends BaseRepository
 
         $queryBuilder = $this->getQueryBuilderForTable();
         $contentTypesByLanguage = $queryBuilder
-            ->selectLiteral('COUNT(uid) AS count')
             ->select('sys_language_uid', 'CType', 'list_type')
+            ->addSelectLiteral('COUNT(uid) AS count')
             ->from($this->tableName)
             ->where($queryBuilder->expr()->gte('sys_language_uid', 0))
             ->groupBy('sys_language_uid', 'CType', 'list_type')
             ->orderBy('sys_language_uid', 'ASC')
+            ->addOrderBy('list_type', 'ASC')
             ->execute()
             ->fetchAll(\Doctrine\DBAL\FetchMode::ASSOCIATIVE);
 
-        foreach ($contentTypesByLanguage as $singleContentTypes) {
-            $key = 'typo3_tt_content_total{sys_language_uid="' . $singleContentTypes['sys_language_uid']
-                . '", cType="' . $singleContentTypes['cType'] . '"}';
-            $data[$key] = $singleContentTypes['count'];
+        foreach ($contentTypesByLanguage as $contentTypeByLanguage) {
+            $key = 'typo3_tt_content_total{sys_language_uid="' . $contentTypeByLanguage['sys_language_uid'] . '"';
+            if ($contentTypeByLanguage['CType'] !== 'list') {
+                $key .= ', CType="' . $contentTypeByLanguage['CType'] . '"';
+            }
+            if ($contentTypeByLanguage['list_type'] !== '') {
+                $key .= ', list_type="' . $contentTypeByLanguage['list_type'] . '"';
+            }
+            $key .= '}';
+            $data[$key] = $contentTypeByLanguage['count'];
         }
 
         return $data;

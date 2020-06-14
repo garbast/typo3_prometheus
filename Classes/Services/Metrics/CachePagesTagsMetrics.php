@@ -13,9 +13,9 @@
 
 namespace Mfc\Prometheus\Services\Metrics;
 
-class CfCachePagesMetrics extends AbstractMetrics
+class CachePagesTagsMetrics extends AbstractMetrics
 {
-    protected $repositoryClassName = \Mfc\Prometheus\Domain\Repository\CfCachePagesRepository::class;
+    protected $repositoryClassName = \Mfc\Prometheus\Domain\Repository\CachePagesTagsRepository::class;
 
     protected $velocity = MetricsInterface::FAST;
 }

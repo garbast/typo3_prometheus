@@ -13,9 +13,21 @@
 
 namespace Mfc\Prometheus\Domain\Repository;
 
-class CfCachePagesRepository extends BaseRepository
+class CachePagesRepository extends BaseRepository
 {
     protected $tableName = 'cf_cache_pages';
+
+    /**
+     * CachePagesRepository constructor.
+     *
+     * @todo Remove once 9.5 support get removed
+     */
+    public function __construct()
+    {
+        if (\TYPO3\CMS\Core\Utility\VersionNumberUtility::convertVersionNumberToInteger(TYPO3_branch) > 10000000) {
+            $this->tableName = 'cache_pages';
+        }
+    }
 
     public function getMetricsValues(): array
     {
@@ -29,7 +41,7 @@ class CfCachePagesRepository extends BaseRepository
             ->fetchColumn(0);
 
         if ($cachedPages !== false) {
-            $data['typo3_cf_cache_pages_total'] = $cachedPages;
+            $data['typo3_cache_pages_total'] = $cachedPages;
         }
 
         return $data;

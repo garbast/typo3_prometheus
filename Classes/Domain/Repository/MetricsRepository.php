@@ -15,7 +15,7 @@ namespace Mfc\Prometheus\Domain\Repository;
 
 class MetricsRepository extends BaseRepository
 {
-    protected $tableName = 'prometheus_metrics';
+    protected $tableName = 'tx_prometheus_metrics';
 
     public function getAllMetrics(): array
     {

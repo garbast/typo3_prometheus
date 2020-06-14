@@ -24,7 +24,7 @@ class SysLockedRecordsRepository extends BaseRepository
         $queryBuilder = $this->getQueryBuilderForTable();
         $lockedRecords = $queryBuilder
             ->select('record_table')
-            ->selectLiteral('COUNT(uid) AS count')
+            ->addSelectLiteral('COUNT(uid) AS count')
             ->from($this->tableName)
             ->groupBy('record_table')
             ->orderBy('record_table', 'ASC')

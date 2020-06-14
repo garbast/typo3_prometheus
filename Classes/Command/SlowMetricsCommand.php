@@ -13,20 +13,7 @@
 
 namespace Mfc\Prometheus\Command;
 
-use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Output\OutputInterface;
-
 class SlowMetricsCommand extends AbstractCommand
 {
-    protected function configure()
-    {
-        $this->setDescription('Prepare slow metrics');
-        parent::configure();
-    }
-
-    protected function execute(InputInterface $input, OutputInterface $output)
-    {
-        $this->initializeMetrics(\Mfc\Prometheus\Services\Metrics\MetricsInterface::SLOW);
-        $this->getValuesAndWriteToDb();
-    }
+    protected $velocity = \Mfc\Prometheus\Services\Metrics\MetricsInterface::SLOW;
 }

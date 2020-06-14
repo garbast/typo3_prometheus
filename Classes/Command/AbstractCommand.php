@@ -14,51 +14,57 @@
 namespace Mfc\Prometheus\Command;
 
 use Mfc\Prometheus\Domain\Repository\MetricsRepository;
-use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
+use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Output\OutputInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 class AbstractCommand extends \Symfony\Component\Console\Command\Command
 {
     /**
-     * @var array
+     * @var string
      */
-    protected $metricsToWork = [];
+    protected $velocity = '';
 
     /**
-     * @var MetricsRepository
+     * @var array
      */
-    protected $metricsRepository;
+    protected $metricsToMeasure = [];
 
     /**
      * Configure the command by defining the name, options and arguments
      */
     protected function configure()
     {
-        $this->metricsRepository = GeneralUtility::makeInstance(MetricsRepository::class);
+        $this->setDescription('Prepare ' . $this->velocity . ' metrics');
     }
 
-    protected function initializeMetrics($velocity = '')
+    protected function execute(InputInterface $input, OutputInterface $output)
     {
-        /** @var ExtensionConfiguration $extensionConfiguration */
-        $extensionConfiguration = GeneralUtility::makeInstance(ExtensionConfiguration::class);
-        $metricsToMeasure = $extensionConfiguration->get('prometheus', 'metricsToMeasure');
+        $this->prepareMetrics($this->velocity);
+        $this->getValuesAndWriteToDb();
+    }
 
-        foreach ($metricsToMeasure[$velocity] as $singleMetrics) {
-            $metricsHelper = GeneralUtility::makeInstance($singleMetrics);
+    protected function prepareMetrics($velocity = '')
+    {
+        $metricsToMeasure = $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['prometheus']['metricsToMeasure'][$velocity];
+        foreach ($metricsToMeasure as $metricToMeasure) {
+            $metricsHelper = GeneralUtility::makeInstance($metricToMeasure);
             if ($velocity != '' && $metricsHelper->getVelocity()) {
-                $this->metricsToWork[] = $metricsHelper;
+                $this->metricsToMeasure[] = $metricsHelper;
             }
         }
     }
 
     protected function getValuesAndWriteToDb()
     {
-        /** @var $singleMetrics \Mfc\Prometheus\Services\Metrics\MetricsInterface $singleMetrics */
-        foreach ($this->metricsToWork as $singleMetrics) {
-            $dataToInsert = $singleMetrics->getMetricsValues();
+        /** @var MetricsRepository $metricsRepository */
+        $metricsRepository = GeneralUtility::makeInstance(MetricsRepository::class);
+        /** @var $metricToMeasure \Mfc\Prometheus\Services\Metrics\MetricsInterface $singleMetrics */
+        foreach ($this->metricsToMeasure as $metricToMeasure) {
+            $dataToInsert = $metricToMeasure->getMetricsValues();
             if (!empty($dataToInsert)) {
-                $this->metricsRepository->deleteOldMetricData(array_keys($dataToInsert));
-                $this->metricsRepository->insertMetrics($dataToInsert);
+                $metricsRepository->deleteOldMetricData(array_keys($dataToInsert));
+                $metricsRepository->insertMetrics($dataToInsert);
             }
         }
     }
