@@ -31,7 +31,7 @@ call_user_func(function () {
             = \Mfc\Prometheus\Services\Metrics\TtContentMetrics::class;
     }
 
-    if (\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::isLoaded('static_info_tables')) {
+    if (\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::isLoaded('powermail')) {
         $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['prometheus']['metricsToMeasure'][$fast][]
             = \Mfc\Prometheus\Services\Metrics\PowermailMetrics::class;
     }
