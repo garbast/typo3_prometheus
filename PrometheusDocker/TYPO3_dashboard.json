@@ -312,7 +312,7 @@
 					"tableColumn": "",
 					"targets": [
 						{
-							"expr": "sum(typo3_tt_content_total)",
+							"expr": "sum(typo3_tt_content)",
 							"format": "time_series",
 							"intervalFactor": 2,
 							"refId": "A"

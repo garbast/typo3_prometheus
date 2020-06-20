@@ -113,7 +113,7 @@ class TtContentRepository extends BaseRepository
             $contentSum += $contentTypeByLanguage['count'];
         }
 
-        $data['typo3_tt_content_languages'] = $contentSum;
+        $data['typo3_tt_content'] = $contentSum;
         return $data;
     }
 }
