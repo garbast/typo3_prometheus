@@ -38,11 +38,9 @@ class SysLockedRecordsRepository extends BaseRepository
             $data[$key] = $singleContentTypes['count'];
         }
 
-        if (count($lockedRecords)) {
-            /** @var MetricsRepository $metricsRepository */
-            $metricsRepository = GeneralUtility::makeInstance(MetricsRepository::class);
-            $metricsRepository->deleteLikeMetricKey('typo3_sys_locked_records_total%');
-        }
+        /** @var MetricsRepository $metricsRepository */
+        $metricsRepository = GeneralUtility::makeInstance(MetricsRepository::class);
+        $metricsRepository->deleteLikeMetricKey('typo3_sys_locked_records_total%');
 
         return $data;
     }
