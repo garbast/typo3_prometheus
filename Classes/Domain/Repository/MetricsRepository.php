@@ -45,7 +45,7 @@ class MetricsRepository extends BaseRepository
         }
     }
 
-    public function deleteOldMetricData(array $keys)
+    public function deleteOldMetricData(array $metricKeys)
     {
         $queryBuilder = $this->getQueryBuilderForTable();
         $queryBuilder
@@ -53,7 +53,24 @@ class MetricsRepository extends BaseRepository
             ->where(
                 $queryBuilder->expr()->in(
                     'metric_key',
-                    $queryBuilder->createNamedParameter($keys, \Doctrine\DBAL\Connection::PARAM_STR_ARRAY)
+                    $queryBuilder->createNamedParameter($metricKeys, \Doctrine\DBAL\Connection::PARAM_STR_ARRAY)
+                )
+            )
+            ->execute();
+    }
+
+    public function deleteLikeMetricKey(string $metricKey)
+    {
+        $queryBuilder = $this->getQueryBuilderForTable();
+        $queryBuilder
+            ->delete($this->tableName)
+            ->where(
+                $queryBuilder->expr()->like(
+                    'metric_key',
+                    $queryBuilder->createNamedParameter(
+                        $queryBuilder->escapeLikeWildcards($metricKey),
+                        \PDO::PARAM_STR
+                    )
                 )
             )
             ->execute();
