@@ -21,13 +21,25 @@ class TtContentRepository extends BaseRepository
     {
         $data = [];
 
+        $data = $this->getContentTypes($data);
+        $data = $this->getPluginTypes($data);
+        $data = $this->getLanguages($data);
+
+        return $data;
+    }
+
+    protected function getContentTypes(array $data): array
+    {
         $queryBuilder = $this->getQueryBuilderForTable();
         $contentTypesByLanguage = $queryBuilder
-            ->select('sys_language_uid', 'CType', 'list_type')
+            ->select('sys_language_uid', 'CType')
             ->addSelectLiteral('COUNT(uid) AS count')
             ->from($this->tableName)
-            ->where($queryBuilder->expr()->gte('sys_language_uid', 0))
-            ->groupBy('sys_language_uid', 'CType', 'list_type')
+            ->where(
+                $queryBuilder->expr()->gte('sys_language_uid', 0),
+                $queryBuilder->expr()->neq('CType', $queryBuilder->createNamedParameter('list'))
+            )
+            ->groupBy('sys_language_uid', 'CType')
             ->orderBy('sys_language_uid', 'ASC')
             ->addOrderBy('list_type', 'ASC')
             ->execute()
@@ -35,20 +47,73 @@ class TtContentRepository extends BaseRepository
 
         $contentSum = 0;
         foreach ($contentTypesByLanguage as $contentTypeByLanguage) {
-            $key = 'typo3_tt_content_total{sys_language_uid="' . $contentTypeByLanguage['sys_language_uid'] . '"';
-            if ($contentTypeByLanguage['CType'] !== 'list') {
-                $key .= ',CType="' . $contentTypeByLanguage['CType'] . '"';
-            }
-            if ($contentTypeByLanguage['list_type'] !== '') {
-                $key .= ',list_type="' . $contentTypeByLanguage['list_type'] . '"';
-            }
+            $key = 'typo3_tt_content_ctypes';
+            $key .= '{sys_language_uid="' . $contentTypeByLanguage['sys_language_uid'] . '"';
+            $key .= ',CType="' . $contentTypeByLanguage['CType'] . '"';
             $key .= '}';
             $data[$key] = $contentTypeByLanguage['count'];
             $contentSum += $contentTypeByLanguage['count'];
         }
 
-        $data['typo3_tt_content_total'] = $contentSum;
+        $data['typo3_tt_content_ctypes'] = $contentSum;
+        return $data;
+    }
 
+    protected function getPluginTypes(array $data): array
+    {
+        $queryBuilder = $this->getQueryBuilderForTable();
+        $contentTypesByLanguage = $queryBuilder
+            ->select('sys_language_uid', 'list_type')
+            ->addSelectLiteral('COUNT(uid) AS count')
+            ->from($this->tableName)
+            ->where(
+                $queryBuilder->expr()->gte('sys_language_uid', 0),
+                $queryBuilder->expr()->eq('CType', $queryBuilder->createNamedParameter('list'))
+            )
+            ->groupBy('sys_language_uid', 'list_type')
+            ->orderBy('sys_language_uid', 'ASC')
+            ->addOrderBy('list_type', 'ASC')
+            ->execute()
+            ->fetchAll(\Doctrine\DBAL\FetchMode::ASSOCIATIVE);
+
+        $contentSum = 0;
+        foreach ($contentTypesByLanguage as $contentTypeByLanguage) {
+            $key = 'typo3_tt_content_plugins';
+            $key .= '{sys_language_uid="' . $contentTypeByLanguage['sys_language_uid'] . '"';
+            $key .= ',list_type="' . $contentTypeByLanguage['list_type'] . '"';
+            $key .= '}';
+            $data[$key] = $contentTypeByLanguage['count'];
+            $contentSum += $contentTypeByLanguage['count'];
+        }
+
+        $data['typo3_tt_content_plugins'] = $contentSum;
+        return $data;
+    }
+
+    protected function getLanguages(array $data): array
+    {
+        $queryBuilder = $this->getQueryBuilderForTable();
+        $contentTypesByLanguage = $queryBuilder
+            ->select('sys_language_uid')
+            ->addSelectLiteral('COUNT(uid) AS count')
+            ->from($this->tableName)
+            ->where(
+                $queryBuilder->expr()->gte('sys_language_uid', 0)
+            )
+            ->groupBy('sys_language_uid')
+            ->orderBy('sys_language_uid', 'ASC')
+            ->execute()
+            ->fetchAll(\Doctrine\DBAL\FetchMode::ASSOCIATIVE);
+
+        $contentSum = 0;
+        foreach ($contentTypesByLanguage as $contentTypeByLanguage) {
+            $key = 'typo3_tt_content_languages';
+            $key .= '{sys_language_uid="' . $contentTypeByLanguage['sys_language_uid'] . '"}';
+            $data[$key] = $contentTypeByLanguage['count'];
+            $contentSum += $contentTypeByLanguage['count'];
+        }
+
+        $data['typo3_tt_content_languages'] = $contentSum;
         return $data;
     }
 }
