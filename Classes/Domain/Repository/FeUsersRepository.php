@@ -13,6 +13,8 @@
 
 namespace Mfc\Prometheus\Domain\Repository;
 
+use TYPO3\CMS\Core\Utility\GeneralUtility;
+
 class FeUsersRepository extends BaseRepository
 {
     protected $tableName = 'fe_users';
@@ -30,6 +32,10 @@ class FeUsersRepository extends BaseRepository
 
         if ($frontendUsers !== false) {
             $data['typo3_fe_users_total'] = $frontendUsers;
+        } else {
+            /** @var MetricsRepository $metricsRepository */
+            $metricsRepository = GeneralUtility::makeInstance(MetricsRepository::class);
+            $metricsRepository->deleteLikeMetricKey('typo3_fe_users_total');
         }
 
         return $data;

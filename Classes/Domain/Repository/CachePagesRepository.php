@@ -13,6 +13,8 @@
 
 namespace Mfc\Prometheus\Domain\Repository;
 
+use TYPO3\CMS\Core\Utility\GeneralUtility;
+
 class CachePagesRepository extends BaseRepository
 {
     protected $tableName = 'cf_cache_pages';
@@ -42,6 +44,10 @@ class CachePagesRepository extends BaseRepository
 
         if ($cachedPages !== false) {
             $data['typo3_cache_pages_total'] = $cachedPages;
+        } else {
+            /** @var MetricsRepository $metricsRepository */
+            $metricsRepository = GeneralUtility::makeInstance(MetricsRepository::class);
+            $metricsRepository->deleteLikeMetricKey('typo3_cache_pages_total');
         }
 
         return $data;

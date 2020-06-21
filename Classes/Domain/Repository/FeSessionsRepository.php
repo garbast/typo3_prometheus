@@ -13,6 +13,8 @@
 
 namespace Mfc\Prometheus\Domain\Repository;
 
+use TYPO3\CMS\Core\Utility\GeneralUtility;
+
 class FeSessionsRepository extends BaseRepository
 {
     protected $tableName = 'fe_sessions';
@@ -30,6 +32,10 @@ class FeSessionsRepository extends BaseRepository
 
         if ($frontendSessions !== false) {
             $data['typo3_fe_sessions_total'] = $frontendSessions;
+        } else {
+            /** @var MetricsRepository $metricsRepository */
+            $metricsRepository = GeneralUtility::makeInstance(MetricsRepository::class);
+            $metricsRepository->deleteLikeMetricKey('typo3_fe_sessions_total');
         }
 
         return $data;

@@ -13,6 +13,8 @@
 
 namespace Mfc\Prometheus\Domain\Repository;
 
+use TYPO3\CMS\Core\Utility\GeneralUtility;
+
 class CachePagesTagsRepository extends BaseRepository
 {
     protected $tableName = 'cf_cache_pages_tags';
@@ -50,6 +52,10 @@ class CachePagesTagsRepository extends BaseRepository
 
         if ($cachedPagesTags !== false) {
             $data['typo3_cache_pages_tags_total'] = $cachedPagesTags;
+        } else {
+            /** @var MetricsRepository $metricsRepository */
+            $metricsRepository = GeneralUtility::makeInstance(MetricsRepository::class);
+            $metricsRepository->deleteLikeMetricKey('typo3_cache_pages_tags_total');
         }
 
         return $data;
@@ -66,6 +72,10 @@ class CachePagesTagsRepository extends BaseRepository
 
         if ($distinctCachedPagesTags !== false) {
             $data['typo3_cache_pages_tags_distinct_total'] = $distinctCachedPagesTags;
+        } else {
+            /** @var MetricsRepository $metricsRepository */
+            $metricsRepository = GeneralUtility::makeInstance(MetricsRepository::class);
+            $metricsRepository->deleteLikeMetricKey('typo3_cache_pages_tags_distinct_total');
         }
 
         return $data;

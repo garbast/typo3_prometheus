@@ -68,7 +68,7 @@ class MetricsRepository extends BaseRepository
                 $queryBuilder->expr()->like(
                     'metric_key',
                     $queryBuilder->createNamedParameter(
-                        $queryBuilder->escapeLikeWildcards($metricKey),
+                        $queryBuilder->escapeLikeWildcards($metricKey) . '%',
                         \PDO::PARAM_STR
                     )
                 )

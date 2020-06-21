@@ -40,7 +40,7 @@ class SysLockedRecordsRepository extends BaseRepository
 
         /** @var MetricsRepository $metricsRepository */
         $metricsRepository = GeneralUtility::makeInstance(MetricsRepository::class);
-        $metricsRepository->deleteLikeMetricKey('typo3_sys_locked_records_total%');
+        $metricsRepository->deleteLikeMetricKey('typo3_sys_locked_records_total');
 
         return $data;
     }

@@ -13,6 +13,8 @@
 
 namespace Mfc\Prometheus\Domain\Repository;
 
+use TYPO3\CMS\Core\Utility\GeneralUtility;
+
 class TtContentRepository extends BaseRepository
 {
     protected $tableName = 'tt_content';
@@ -56,6 +58,11 @@ class TtContentRepository extends BaseRepository
         }
 
         $data['typo3_tt_content_ctypes'] = $contentSum;
+
+        /** @var MetricsRepository $metricsRepository */
+        $metricsRepository = GeneralUtility::makeInstance(MetricsRepository::class);
+        $metricsRepository->deleteLikeMetricKey('typo3_tt_content_ctypes');
+
         return $data;
     }
 
@@ -87,6 +94,11 @@ class TtContentRepository extends BaseRepository
         }
 
         $data['typo3_tt_content_plugins'] = $contentSum;
+
+        /** @var MetricsRepository $metricsRepository */
+        $metricsRepository = GeneralUtility::makeInstance(MetricsRepository::class);
+        $metricsRepository->deleteLikeMetricKey('typo3_tt_content_plugins');
+
         return $data;
     }
 
@@ -114,6 +126,11 @@ class TtContentRepository extends BaseRepository
         }
 
         $data['typo3_tt_content'] = $contentSum;
+
+        /** @var MetricsRepository $metricsRepository */
+        $metricsRepository = GeneralUtility::makeInstance(MetricsRepository::class);
+        $metricsRepository->deleteLikeMetricKey('typo3_tt_content_languages');
+
         return $data;
     }
 }
