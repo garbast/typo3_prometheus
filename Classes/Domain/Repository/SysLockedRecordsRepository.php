@@ -13,6 +13,8 @@
 
 namespace Mfc\Prometheus\Domain\Repository;
 
+use TYPO3\CMS\Core\Utility\GeneralUtility;
+
 class SysLockedRecordsRepository extends BaseRepository
 {
     protected $tableName = 'sys_lockedrecords';
@@ -38,6 +40,10 @@ class SysLockedRecordsRepository extends BaseRepository
         }
 
         if (empty($lockedRecords)) {
+            /** @var MetricsRepository $metricsRepository */
+            $metricsRepository = GeneralUtility::makeInstance(MetricsRepository::class);
+            $metricsRepository->deleteLikeMetricKey('typo3_sys_locked_records_total');
+
             $data['typo3_sys_locked_records_total'] = 0;
         }
 
