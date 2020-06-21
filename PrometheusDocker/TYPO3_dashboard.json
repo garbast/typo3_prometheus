@@ -1888,7 +1888,7 @@
 					"expr": "typo3_pages_types{doktype=~\"$doktype\"}",
 					"format": "time_series",
 					"intervalFactor": 2,
-					"legendFormat": "\"{{ doktype }}\"",
+					"legendFormat": "Type \"{{ doktype }}\"",
 					"refId": "A"
 				}
 			],
@@ -1968,7 +1968,7 @@
 					"expr": "typo3_pages_languages{sys_language_uid=~\"$sys_language_uid\"}",
 					"format": "time_series",
 					"intervalFactor": 2,
-					"legendFormat": "Language UID {{ sys_language_uid }}",
+					"legendFormat": "Language {{ sys_language_uid }}",
 					"refId": "A"
 				}
 			],
@@ -2049,14 +2049,14 @@
 					"format": "time_series",
 					"interval": "",
 					"intervalFactor": 2,
-					"legendFormat": "Total by CType {{ CType }}",
+					"legendFormat": "Content \"{{ CType }}\"",
 					"refId": "B"
 				}
 			],
 			"thresholds": [],
 			"timeFrom": null,
 			"timeShift": null,
-			"title": "Content elements grouped by CType",
+			"title": "Content elements grouped by content type",
 			"tooltip": {
 				"shared": true,
 				"sort": 2,
@@ -2129,7 +2129,7 @@
 					"expr": "sum(typo3_tt_content_plugins{sys_language_uid=~\"$sys_language_uid\",list_type=~\"$list_type\"}) by (list_type)",
 					"format": "time_series",
 					"intervalFactor": 2,
-					"legendFormat": "Total by Plugin Type {{ list_type }}",
+					"legendFormat": "Plugin \"{{ list_type }}\"",
 					"refId": "C"
 				}
 			],
@@ -2209,7 +2209,7 @@
 					"expr": "sum(typo3_tt_content_languages{sys_language_uid=~\"$sys_language_uid\",CType=~\"$CType.*\"}) by (sys_language_uid)",
 					"format": "time_series",
 					"intervalFactor": 2,
-					"legendFormat": "Total by Language UID {{ sys_language_uid }}",
+					"legendFormat": "Language {{ sys_language_uid }}",
 					"refId": "C"
 				}
 			],
