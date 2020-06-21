@@ -302,7 +302,7 @@
 			"tableColumn": "",
 			"targets": [
 				{
-					"expr": "sum(typo3_pages_total)",
+					"expr": "sum(typo3_pages_types)",
 					"format": "time_series",
 					"intervalFactor": 2,
 					"refId": "A"
@@ -533,7 +533,7 @@
 			"steppedLine": false,
 			"targets": [
 				{
-					"expr": "sum(typo3_cache_pages_tags_distinct_total) / sum(typo3_pages_total{sys_language_uid=~\"$sys_language_uid\"}) ",
+					"expr": "sum(typo3_cache_pages_tags_distinct_total) / sum(typo3_pages_languages{sys_language_uid=~\"$sys_language_uid\"}) ",
 					"format": "time_series",
 					"instant": false,
 					"intervalFactor": 2,
