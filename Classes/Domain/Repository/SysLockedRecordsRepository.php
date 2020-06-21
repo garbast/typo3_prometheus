@@ -13,8 +13,6 @@
 
 namespace Mfc\Prometheus\Domain\Repository;
 
-use TYPO3\CMS\Core\Utility\GeneralUtility;
-
 class SysLockedRecordsRepository extends BaseRepository
 {
     protected $tableName = 'sys_lockedrecords';
@@ -34,13 +32,14 @@ class SysLockedRecordsRepository extends BaseRepository
             ->fetchAll(\Doctrine\DBAL\FetchMode::ASSOCIATIVE);
 
         foreach ($lockedRecords as $singleContentTypes) {
-            $key = 'typo3_sys_locked_records_total{record_table="' . $singleContentTypes['record_table'] . '"}';
+            $key = 'typo3_sys_locked_records_total{record_table="'
+                . $this->getTcaTableLabel($singleContentTypes['record_table']) . '"}';
             $data[$key] = $singleContentTypes['count'];
         }
 
-        /** @var MetricsRepository $metricsRepository */
-        $metricsRepository = GeneralUtility::makeInstance(MetricsRepository::class);
-        $metricsRepository->deleteLikeMetricKey('typo3_sys_locked_records_total');
+        if (empty($lockedRecords)) {
+            $data['typo3_sys_locked_records_total'] = 0;
+        }
 
         return $data;
     }

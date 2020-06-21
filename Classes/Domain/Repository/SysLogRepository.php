@@ -129,7 +129,8 @@ class SysLogRepository extends BaseRepository
             ->fetchAll(\Doctrine\DBAL\FetchMode::ASSOCIATIVE);
 
         foreach ($insertedRecords as $insertedRecord) {
-            $key = 'typo3_sys_log_inserted_records_total{tablename="' . $insertedRecord['tablename'] . '"}';
+            $key = 'typo3_sys_log_inserted_records_total{tablename="'
+                . $this->getTcaTableLabel($insertedRecord['tablename']) . '"}';
             $data[$key] = $insertedRecord['count'];
         }
 
@@ -153,7 +154,8 @@ class SysLogRepository extends BaseRepository
             ->fetchAll(\Doctrine\DBAL\FetchMode::ASSOCIATIVE);
 
         foreach ($deletedRecords as $deletedRecord) {
-            $key = 'typo3_sys_log_deleted_records_total{tablename="' . $deletedRecord['tablename'] . '"}';
+            $key = 'typo3_sys_log_deleted_records_total{tablename="'
+                . $this->getTcaTableLabel($deletedRecord['tablename']) . '"}';
             $data[$key] = $deletedRecord['count'];
         }
 
@@ -177,7 +179,8 @@ class SysLogRepository extends BaseRepository
             ->fetchAll(\Doctrine\DBAL\FetchMode::ASSOCIATIVE);
 
         foreach ($updatedRecords as $singleContentTypes) {
-            $key = 'typo3_sys_log_updated_records_total{tablename="' . $singleContentTypes['tablename'] . '"}';
+            $key = 'typo3_sys_log_updated_records_total{tablename="'
+                . $this->getTcaTableLabel($singleContentTypes['tablename']) . '"}';
             $data[$key] = $singleContentTypes['count'];
         }
 

@@ -31,14 +31,24 @@ class PageRepository extends BaseRepository
     {
         $queryBuilder = $this->getQueryBuilderForTable();
         $defaultPages = $queryBuilder
-            ->count('uid')
+            ->select('doktype')
+            ->addSelectLiteral('COUNT(uid) AS count')
             ->from($this->tableName)
             ->where($queryBuilder->expr()->eq('sys_language_uid', 0))
+            ->groupBy('doktype')
+            ->orderBy('doktype', 'ASC')
             ->execute()
-            ->fetchColumn(0);
+            ->fetchAll(\Doctrine\DBAL\FetchMode::ASSOCIATIVE);
 
-        if ($defaultPages !== false) {
-            $data['typo3_pages_total{sys_language_uid="0"}'] = $defaultPages;
+        $pageSum = 0;
+        foreach ($defaultPages as $defaultPage) {
+            $label = $this->getTcaFieldLabel('pages', 'doktype', $defaultPage['doktype']);
+            $data['typo3_pages_total{doktype="' . $label . '"}'] = $defaultPage['count'];
+            $pageSum += $defaultPage['count'];
+        }
+
+        if ($pageSum) {
+            $data['typo3_pages_total{sys_language_uid="0"}'] = $pageSum;
         }
 
         return $data;

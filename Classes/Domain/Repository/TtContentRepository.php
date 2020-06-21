@@ -49,9 +49,10 @@ class TtContentRepository extends BaseRepository
 
         $contentSum = 0;
         foreach ($contentTypesByLanguage as $contentTypeByLanguage) {
+            $label = $this->getTcaFieldLabel('tt_content', 'CType', $contentTypeByLanguage['CType']);
             $key = 'typo3_tt_content_ctypes';
             $key .= '{sys_language_uid="' . $contentTypeByLanguage['sys_language_uid'] . '"';
-            $key .= ',CType="' . $contentTypeByLanguage['CType'] . '"';
+            $key .= ',CType="' . $label . '"';
             $key .= '}';
             $data[$key] = $contentTypeByLanguage['count'];
             $contentSum += $contentTypeByLanguage['count'];
@@ -85,9 +86,10 @@ class TtContentRepository extends BaseRepository
 
         $contentSum = 0;
         foreach ($contentTypesByLanguage as $contentTypeByLanguage) {
+            $label = $this->getTcaFieldLabel('tt_content', 'list_type', $contentTypeByLanguage['list_type']);
             $key = 'typo3_tt_content_plugins';
             $key .= '{sys_language_uid="' . $contentTypeByLanguage['sys_language_uid'] . '"';
-            $key .= ',list_type="' . $contentTypeByLanguage['list_type'] . '"';
+            $key .= ',list_type="' . $label . '"';
             $key .= '}';
             $data[$key] = $contentTypeByLanguage['count'];
             $contentSum += $contentTypeByLanguage['count'];
