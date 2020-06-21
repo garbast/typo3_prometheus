@@ -1867,7 +1867,7 @@
 			},
 			"gridPos": {
 				"h": 7,
-				"w": 24,
+				"w": 16,
 				"x": 0,
 				"y": 36
 			},
@@ -1885,17 +1885,97 @@
 			"steppedLine": false,
 			"targets": [
 				{
-					"expr": "typo3_pages_total{sys_language_uid=~\"$sys_language_uid\"}",
+					"expr": "typo3_pages_types{doktype=~\"$doktype\"}",
 					"format": "time_series",
 					"intervalFactor": 2,
-					"legendFormat": "language UID {{ sys_language_uid }}",
+					"legendFormat": "\"{{ doktype }}\"",
 					"refId": "A"
 				}
 			],
 			"thresholds": [],
 			"timeFrom": null,
 			"timeShift": null,
-			"title": "Pages by language UID",
+			"title": "Pages by type",
+			"tooltip": {
+				"shared": true,
+				"sort": 2,
+				"value_type": "individual"
+			},
+			"type": "graph",
+			"xaxis": {
+				"buckets": null,
+				"mode": "time",
+				"name": null,
+				"show": true,
+				"values": []
+			},
+			"yaxes": [
+				{
+					"format": "short",
+					"label": null,
+					"logBase": 1,
+					"max": null,
+					"min": null,
+					"show": true
+				},
+				{
+					"format": "short",
+					"label": null,
+					"logBase": 1,
+					"max": null,
+					"min": null,
+					"show": true
+				}
+			]
+		},
+		{
+			"aliasColors": {},
+			"bars": false,
+			"dashLength": 10,
+			"dashes": false,
+			"datasource": "${DS_PROMETHEUS}",
+			"fill": 1,
+			"id": 62,
+			"legend": {
+				"avg": false,
+				"current": true,
+				"max": false,
+				"min": false,
+				"show": true,
+				"total": false,
+				"values": true
+			},
+			"gridPos": {
+				"h": 7,
+				"w": 8,
+				"x": 0,
+				"y": 36
+			},
+			"lines": true,
+			"linewidth": 1,
+			"links": [],
+			"nullPointMode": "null",
+			"percentage": false,
+			"pointradius": 5,
+			"points": false,
+			"renderer": "flot",
+			"seriesOverrides": [],
+			"spaceLength": 10,
+			"stack": false,
+			"steppedLine": false,
+			"targets": [
+				{
+					"expr": "typo3_pages_languages{sys_language_uid=~\"$sys_language_uid\"}",
+					"format": "time_series",
+					"intervalFactor": 2,
+					"legendFormat": "Language UID {{ sys_language_uid }}",
+					"refId": "A"
+				}
+			],
+			"thresholds": [],
+			"timeFrom": null,
+			"timeShift": null,
+			"title": "Pages by language",
 			"tooltip": {
 				"shared": true,
 				"sort": 2,
@@ -2213,6 +2293,31 @@
 				"name": "sys_language_uid",
 				"options": [],
 				"query": "label_values(typo3_pages_total, sys_language_uid)",
+				"refresh": 1,
+				"regex": "",
+				"sort": 1,
+				"tagValuesQuery": "",
+				"tags": [],
+				"tagsQuery": "",
+				"type": "query",
+				"useTags": false
+			},
+			{
+				"allValue": ".*",
+				"current": {
+					"text": "All",
+					"value": [
+						"$__all"
+					]
+				},
+				"datasource": "${DS_PROMETHEUS}",
+				"hide": 0,
+				"includeAll": true,
+				"label": "Page type",
+				"multi": true,
+				"name": "doktype",
+				"options": [],
+				"query": "label_values(typo3_pages_total, doktype)",
 				"refresh": 1,
 				"regex": "",
 				"sort": 1,

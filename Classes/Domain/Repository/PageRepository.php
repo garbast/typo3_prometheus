@@ -22,7 +22,7 @@ class PageRepository extends BaseRepository
         $data = [];
 
         $data = $this->getDefaultPages($data);
-        $data = $this->getPageTranslations($data);
+        $data = $this->getPageLanguages($data);
 
         return $data;
     }
@@ -34,7 +34,6 @@ class PageRepository extends BaseRepository
             ->select('doktype')
             ->addSelectLiteral('COUNT(uid) AS count')
             ->from($this->tableName)
-            ->where($queryBuilder->expr()->eq('sys_language_uid', 0))
             ->groupBy('doktype')
             ->orderBy('doktype', 'ASC')
             ->execute()
@@ -43,33 +42,38 @@ class PageRepository extends BaseRepository
         $pageSum = 0;
         foreach ($defaultPages as $defaultPage) {
             $label = $this->getTcaFieldLabel('pages', 'doktype', $defaultPage['doktype']);
-            $data['typo3_pages_total{doktype="' . $label . '"}'] = $defaultPage['count'];
+            $data['typo3_pages_types{doktype="' . $label . '"}'] = $defaultPage['count'];
             $pageSum += $defaultPage['count'];
         }
 
         if ($pageSum) {
-            $data['typo3_pages_total{sys_language_uid="0"}'] = $pageSum;
+            $data['typo3_pages_types'] = $pageSum;
         }
 
         return $data;
     }
 
-    protected function getPageTranslations(array $data): array
+    protected function getPageLanguages(array $data): array
     {
         $queryBuilder = $this->getQueryBuilderForTable();
         $pageTranslations = $queryBuilder
             ->select('sys_language_uid')
             ->addSelectLiteral('COUNT(uid) AS count')
             ->from($this->tableName)
-            ->where($queryBuilder->expr()->gt('sys_language_uid', 0))
             ->groupBy('sys_language_uid')
             ->orderBy('sys_language_uid', 'ASC')
             ->execute()
             ->fetchAll(\Doctrine\DBAL\FetchMode::ASSOCIATIVE);
 
+        $pageSum = 0;
         foreach ($pageTranslations as $pageTranslation) {
-            $data['typo3_pages_total{sys_language_uid="' . $pageTranslation['sys_language_uid'] . '"}'] =
+            $data['typo3_pages_languages{sys_language_uid="' . $pageTranslation['sys_language_uid'] . '"}'] =
                 $pageTranslation['count'];
+            $pageSum += $pageTranslation['count'];
+        }
+
+        if ($pageSum) {
+            $data['typo3_pages_languages'] = $pageSum;
         }
 
         return $data;
