@@ -229,7 +229,7 @@
 				}
 			],
 			"thresholds": "",
-			"title": "FE User Total",
+			"title": "Frontend User Total",
 			"type": "singlestat",
 			"valueFontSize": "80%",
 			"valueMaps": [
@@ -1085,7 +1085,7 @@
 			"thresholds": [],
 			"timeFrom": null,
 			"timeShift": null,
-			"title": "Failed BE logins",
+			"title": "Failed Backend logins",
 			"tooltip": {
 				"shared": true,
 				"sort": 0,
@@ -1171,7 +1171,7 @@
 			"thresholds": [],
 			"timeFrom": null,
 			"timeShift": null,
-			"title": "Succesful BE logins",
+			"title": "Successful Backend logins",
 			"tooltip": {
 				"shared": true,
 				"sort": 0,
@@ -1532,7 +1532,7 @@
 			"thresholds": [],
 			"timeFrom": null,
 			"timeShift": null,
-			"title": "Failed BE login captchas",
+			"title": "Failed Backend login captchas",
 			"tooltip": {
 				"shared": true,
 				"sort": 0,
