@@ -141,7 +141,7 @@
 			"tableColumn": "",
 			"targets": [
 				{
-					"expr": "sum(typo3_be_users_total)",
+					"expr": "sum(typo3_be_users_total{instance=~\"$instance.*\"})",
 					"format": "time_series",
 					"intervalFactor": 2,
 					"legendFormat": "",
@@ -222,7 +222,7 @@
 			"tableColumn": "",
 			"targets": [
 				{
-					"expr": "sum(typo3_fe_users_total)",
+					"expr": "sum(typo3_fe_users_total{instance=~\"$instance.*\"})",
 					"format": "time_series",
 					"intervalFactor": 2,
 					"refId": "A"
@@ -302,7 +302,7 @@
 			"tableColumn": "",
 			"targets": [
 				{
-					"expr": "sum(typo3_pages_types)",
+					"expr": "sum(typo3_pages_types{instance=~\"$instance.*\"})",
 					"format": "time_series",
 					"intervalFactor": 2,
 					"refId": "A"
@@ -382,7 +382,7 @@
 			"tableColumn": "",
 			"targets": [
 				{
-					"expr": "sum(typo3_tt_content)",
+					"expr": "sum(typo3_tt_content{instance=~\"$instance.*\"})",
 					"format": "time_series",
 					"intervalFactor": 2,
 					"refId": "A"
@@ -453,7 +453,7 @@
 			"steppedLine": false,
 			"targets": [
 				{
-					"expr": "typo3_cache_pages_tags_distinct_total",
+					"expr": "typo3_cache_pages_tags_distinct_total{instance=~\"$instance.*\"}",
 					"format": "time_series",
 					"intervalFactor": 2,
 					"legendFormat": "Cache pages",
@@ -533,7 +533,7 @@
 			"steppedLine": false,
 			"targets": [
 				{
-					"expr": "sum(typo3_cache_pages_tags_distinct_total) / sum(typo3_pages_languages{sys_language_uid=~\"$sys_language_uid\"}) ",
+					"expr": "sum(typo3_cache_pages_tags_distinct_total{instance=~\"$instance.*\"}) / sum(typo3_pages_languages{instance=~\"$instance.*\",sys_language_uid=~\"$sys_language_uid\"}) ",
 					"format": "time_series",
 					"instant": false,
 					"intervalFactor": 2,
@@ -614,7 +614,7 @@
 			"steppedLine": true,
 			"targets": [
 				{
-					"expr": "idelta(typo3_sys_log_cleared_caches_total[1m])",
+					"expr": "idelta(typo3_sys_log_cleared_caches_total{instance=~\"$instance.*\"}[1m])",
 					"format": "time_series",
 					"intervalFactor": 1,
 					"legendFormat": "Clear cache commands via BE",
@@ -694,7 +694,7 @@
 			"steppedLine": true,
 			"targets": [
 				{
-					"expr": "typo3_sys_locked_records_total",
+					"expr": "typo3_sys_locked_records_total{instance=~\"$instance.*\"}",
 					"format": "time_series",
 					"intervalFactor": 2,
 					"legendFormat": "Type: {{ record_table }}",
@@ -789,14 +789,14 @@
 			"steppedLine": false,
 			"targets": [
 				{
-					"expr": "typo3_be_sessions_total",
+					"expr": "typo3_be_sessions_total{instance=~\"$instance.*\"}",
 					"format": "time_series",
 					"intervalFactor": 2,
 					"legendFormat": "BE Sessions",
 					"refId": "A"
 				},
 				{
-					"expr": "typo3_fe_sessions_total",
+					"expr": "typo3_fe_sessions_total{instance=~\"$instance.*\"}",
 					"format": "time_series",
 					"intervalFactor": 2,
 					"legendFormat": "FE Sessions",
@@ -1075,7 +1075,7 @@
 			"steppedLine": true,
 			"targets": [
 				{
-					"expr": "idelta(typo3_sys_log_failed_logins_total[5m])",
+					"expr": "idelta(typo3_sys_log_failed_logins_total{instance=~\"$instance.*\"}[5m])",
 					"format": "time_series",
 					"intervalFactor": 1,
 					"legendFormat": "Login failures",
@@ -1159,7 +1159,7 @@
 			"steppedLine": true,
 			"targets": [
 				{
-					"expr": "idelta(typo3_sys_log_successfull_logins_total[5m])",
+					"expr": "idelta(typo3_sys_log_successfull_logins_total{instance=~\"$instance.*\"}[5m])",
 					"format": "time_series",
 					"instant": false,
 					"interval": "",
@@ -1522,7 +1522,7 @@
 			"steppedLine": true,
 			"targets": [
 				{
-					"expr": "idelta(typo3_sys_log_captcha_failed_logins_total[5m])",
+					"expr": "idelta(typo3_sys_log_captcha_failed_logins_total{instance=~\"$instance.*\"}[5m])",
 					"format": "time_series",
 					"intervalFactor": 1,
 					"legendFormat": "Captcha failures",
@@ -1620,7 +1620,7 @@
 			"steppedLine": true,
 			"targets": [
 				{
-					"expr": "idelta(typo3_sys_log_inserted_records_total[5m])",
+					"expr": "idelta(typo3_sys_log_inserted_records_total{instance=~\"$instance.*\"}[5m])",
 					"format": "time_series",
 					"instant": false,
 					"interval": "",
@@ -1704,7 +1704,7 @@
 			"steppedLine": true,
 			"targets": [
 				{
-					"expr": "idelta(typo3_sys_log_updated_records_total[5m])",
+					"expr": "idelta(typo3_sys_log_updated_records_total{instance=~\"$instance.*\"}[5m])",
 					"format": "time_series",
 					"interval": "",
 					"intervalFactor": 1,
@@ -1788,7 +1788,7 @@
 			"steppedLine": true,
 			"targets": [
 				{
-					"expr": "irate(typo3_sys_log_deleted_records_total[5m])",
+					"expr": "irate(typo3_sys_log_deleted_records_total{instance=~\"$instance.*\"}[5m])",
 					"format": "time_series",
 					"instant": false,
 					"interval": "",
@@ -1885,7 +1885,7 @@
 			"steppedLine": false,
 			"targets": [
 				{
-					"expr": "typo3_pages_types{doktype=~\"$doktype\"}",
+					"expr": "typo3_pages_types{instance=~\"$instance.*\",doktype=~\"$doktype\"}",
 					"format": "time_series",
 					"intervalFactor": 2,
 					"legendFormat": "Type \"{{ doktype }}\"",
@@ -1965,7 +1965,7 @@
 			"steppedLine": false,
 			"targets": [
 				{
-					"expr": "typo3_pages_languages{sys_language_uid=~\"$sys_language_uid\"}",
+					"expr": "typo3_pages_languages{instance=~\"$instance.*\",sys_language_uid=~\"$sys_language_uid\"}",
 					"format": "time_series",
 					"intervalFactor": 2,
 					"legendFormat": "Language {{ sys_language_uid }}",
@@ -2045,7 +2045,7 @@
 			"steppedLine": false,
 			"targets": [
 				{
-					"expr": "sum(typo3_tt_content_ctypes{sys_language_uid=~\"$sys_language_uid\",CType=~\"$CType.*\"}) by (CType)",
+					"expr": "sum(typo3_tt_content_ctypes{instance=~\"$instance.*\",sys_language_uid=~\"$sys_language_uid\",CType=~\"$CType.*\"}) by (CType)",
 					"format": "time_series",
 					"interval": "",
 					"intervalFactor": 2,
@@ -2126,7 +2126,7 @@
 			"steppedLine": false,
 			"targets": [
 				{
-					"expr": "sum(typo3_tt_content_plugins{sys_language_uid=~\"$sys_language_uid\",list_type=~\"$list_type\"}) by (list_type)",
+					"expr": "sum(typo3_tt_content_plugins{instance=~\"$instance.*\",sys_language_uid=~\"$sys_language_uid\",list_type=~\"$list_type\"}) by (list_type)",
 					"format": "time_series",
 					"intervalFactor": 2,
 					"legendFormat": "Plugin \"{{ list_type }}\"",
@@ -2206,7 +2206,7 @@
 			"steppedLine": false,
 			"targets": [
 				{
-					"expr": "sum(typo3_tt_content_languages{sys_language_uid=~\"$sys_language_uid\",CType=~\"$CType.*\"}) by (sys_language_uid)",
+					"expr": "sum(typo3_tt_content_languages{instance=~\"$instance.*\",sys_language_uid=~\"$sys_language_uid\"}) by (sys_language_uid)",
 					"format": "time_series",
 					"intervalFactor": 2,
 					"legendFormat": "Language {{ sys_language_uid }}",
@@ -2257,19 +2257,23 @@
 	"templating": {
 		"list": [
 			{
-				"allValue": null,
-				"current": {},
+				"allValue": ".*",
+				"current": {
+					"text": "All",
+					"value": [
+						"$__all"
+					]
+				},
 				"datasource": "${DS_PROMETHEUS}",
 				"hide": 0,
-				"includeAll": false,
-				"label": "Host",
+				"includeAll": true,
+				"label": "Instance",
 				"multi": false,
-				"name": "host",
+				"name": "instance",
 				"options": [],
 				"query": "label_values(typo3_be_users_total, instance)",
-				"refresh": 2,
+				"refresh": 1,
 				"regex": "/([^:]+):.*/",
-				"skipUrlSync": false,
 				"sort": 1,
 				"tagValuesQuery": "",
 				"tags": [],
@@ -2292,7 +2296,7 @@
 				"multi": true,
 				"name": "sys_language_uid",
 				"options": [],
-				"query": "label_values(typo3_pages_total, sys_language_uid)",
+				"query": "label_values(typo3_tt_content_ctypes, sys_language_uid)",
 				"refresh": 1,
 				"regex": "",
 				"sort": 1,
@@ -2317,7 +2321,7 @@
 				"multi": true,
 				"name": "doktype",
 				"options": [],
-				"query": "label_values(typo3_pages_total, doktype)",
+				"query": "label_values(typo3_pages_types, doktype)",
 				"refresh": 1,
 				"regex": "",
 				"sort": 1,
@@ -2342,7 +2346,7 @@
 				"multi": true,
 				"name": "CType",
 				"options": [],
-				"query": "label_values(typo3_tt_content_total, CType)",
+				"query": "label_values(typo3_tt_content_ctypes, CType)",
 				"refresh": 1,
 				"regex": "",
 				"sort": 1,
@@ -2367,7 +2371,7 @@
 				"multi": true,
 				"name": "list_type",
 				"options": [],
-				"query": "label_values(typo3_tt_content_total, list_type)",
+				"query": "label_values(typo3_tt_content_plugins, list_type)",
 				"refresh": 1,
 				"regex": "",
 				"sort": 1,
